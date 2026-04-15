@@ -1,143 +1,116 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Colors */
-  --color-bg: #F8FAFC;
+  /* Colors — Soft Structuralism palette */
+  --color-bg: #FAFAFA;
   --color-surface: #FFFFFF;
-  --color-surface-alt: #F1F2F3;
-  --color-primary: #1E293B;
-  --color-secondary: #334155;
-  --color-tertiary: #64748B;
+  --color-surface-elevated: #FFFFFF;
+  --color-shell: #F5F5F5;
+  --color-text-1: #111111;
+  --color-text-2: #6B7280;
+  --color-text-3: #9CA3AF;
   --color-accent: #2563EB;
   --color-accent-hover: #1D4ED8;
-  --color-on-primary: #FFFFFF;
-  --color-border: #E4E5E7;
-  --color-border-active: #2563EB;
+  --color-accent-soft: #EFF6FF;
+  --color-on-accent: #FFFFFF;
   --color-destructive: #DC2626;
   --color-destructive-bg: #FEF2F2;
-  --color-ring: #1E293B;
 
   /* Fonts */
   --font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  /* Spacing */
-  --spacing-1: 4px;
-  --spacing-2: 8px;
-  --spacing-3: 12px;
-  --spacing-4: 16px;
-  --spacing-5: 20px;
-  --spacing-6: 24px;
-  --spacing-8: 32px;
-  --spacing-10: 40px;
-  --spacing-12: 48px;
-  --spacing-16: 64px;
-  --spacing-20: 80px;
-
-  /* Radii */
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 16px;
-  --radius-full: 9999px;
+  /* Easing */
+  --ease-soft: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-entry: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Scrollbar styles for chat message area */
-.chat-scrollbar {
+/* Scrollbar — Soft Structuralism: invisible until needed */
+.custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--color-border) transparent;
+  scrollbar-color: rgba(0,0,0,0.08) transparent;
 }
 
-.chat-scrollbar::-webkit-scrollbar {
+.custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
 
-.chat-scrollbar::-webkit-scrollbar-track {
+.custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.chat-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-border);
-  border-radius: 9999px;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.08);
+  border-radius: 3px;
 }
 
-.chat-scrollbar:hover::-webkit-scrollbar-thumb {
-  background-color: var(--color-tertiary);
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.15);
 }
 
-/* Streaming cursor animation */
+/* Streaming cursor — accent color, 530ms blink */
 @keyframes cursor-blink {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.2; }
+  50% { opacity: 0; }
 }
 
 .streaming-cursor {
   display: inline-block;
-  width: 8px;
-  height: 18px;
+  width: 1px;
+  height: 1.2em;
   background-color: var(--color-accent);
-  animation: cursor-blink 800ms ease-in-out infinite;
+  animation: cursor-blink 530ms step-end infinite;
   vertical-align: text-bottom;
   margin-left: 2px;
 }
 
-/* Upload loading bar */
-@keyframes loading-bar {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(400%); }
+/* Shimmer for skeleton loading */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
-.loading-bar {
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--color-shell) 0%,
+    var(--color-surface) 50%,
+    var(--color-shell) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  pointer-events: none;
+}
+
+/* Breathing animation for DropZone outer shell */
+@keyframes breathing {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.005); }
+}
+
+/* Upload progress shimmer overlay */
+@keyframes progress-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.progress-bar-shimmer {
   position: relative;
   overflow: hidden;
-  height: 3px;
-  width: 100%;
-  background-color: var(--color-border);
-  border-radius: 9999px;
 }
 
-.loading-bar::after {
+.progress-bar-shimmer::after {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
-  width: 25%;
+  width: 50%;
   height: 100%;
-  background-color: var(--color-accent);
-  border-radius: 9999px;
-  animation: loading-bar 1s ease-in-out infinite;
-}
-
-/* Three-dot pulse for chat waiting */
-@keyframes dot-pulse {
-  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-  40% { transform: scale(1); opacity: 1; }
-}
-
-.dot-pulse span {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background-color: var(--color-tertiary);
-  animation: dot-pulse 600ms ease-in-out infinite;
-}
-
-.dot-pulse span:nth-child(2) {
-  animation-delay: 150ms;
-}
-
-.dot-pulse span:nth-child(3) {
-  animation-delay: 300ms;
-}
-
-/* Chip entrance stagger */
-@keyframes chip-enter {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255,255,255,0.3) 50%,
+    transparent 100%
+  );
+  animation: progress-shimmer 1.5s infinite;
 }

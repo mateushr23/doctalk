@@ -4,308 +4,183 @@
   "created_at": "2026-04-15",
   "dials": {
     "design_variance": 8,
-    "motion_intensity": 6,
+    "motion_intensity": 7,
     "visual_density": 4
   },
-  "style_mode": "ui-ux-pro-max",
-  "style_base": "Flat Design",
+  "style_mode": "soft",
+  "style_base": "Soft Structuralism",
+  "vibe_archetype": "Soft Structuralism (Consumer / Health / Portfolio)",
+  "layout_archetype": "Asymmetrical Bento + Editorial Split",
   "tokens": {
     "colors": {
-      "bg": { "hex": "#F8FAFC", "role": "Page background, full viewport fill" },
-      "surface": { "hex": "#FFFFFF", "role": "Cards, drop zone, chat bubbles (AI), input bar" },
-      "surface-alt": { "hex": "#F1F2F3", "role": "User message bubbles, starter chips bg, hover feedback" },
-      "primary": { "hex": "#1E293B", "role": "Primary text, headings, document name" },
-      "secondary": { "hex": "#334155", "role": "Body text, AI message text, secondary labels" },
-      "tertiary": { "hex": "#64748B", "role": "Timestamps, helper text, placeholder, muted labels" },
-      "accent": { "hex": "#2563EB", "role": "CTA buttons, focus rings, links, upload progress" },
-      "accent-hover": { "hex": "#1D4ED8", "role": "Hover state for accent elements" },
-      "on-primary": { "hex": "#FFFFFF", "role": "Text on accent backgrounds" },
-      "border": { "hex": "#E4E5E7", "role": "Drop zone border, input borders, dividers" },
-      "border-active": { "hex": "#2563EB", "role": "Focused input border, drag-over drop zone" },
-      "destructive": { "hex": "#DC2626", "role": "Error text, error border" },
-      "destructive-bg": { "hex": "#FEF2F2", "role": "Error message background" },
-      "ring": { "hex": "#1E293B", "role": "Focus ring for keyboard navigation" }
+      "bg": { "hex": "#FAFAFA", "role": "Page background — silver-grey canvas" },
+      "surface": { "hex": "#FFFFFF", "role": "Inner cores of Double-Bezel cards, AI bubbles, input bar" },
+      "surface-elevated": { "hex": "#FFFFFF", "role": "Drop zone inner core, floating panels — distinguished by shadow depth" },
+      "shell": { "hex": "#F5F5F5", "role": "Outer bezel of Double-Bezel cards — aluminum tray" },
+      "text-1": { "hex": "#111111", "role": "Headlines, document name, primary labels — near-black" },
+      "text-2": { "hex": "#6B7280", "role": "Body text, AI responses, secondary labels" },
+      "text-3": { "hex": "#9CA3AF", "role": "Timestamps, placeholders, helper text, muted captions" },
+      "accent": { "hex": "#2563EB", "role": "CTAs, upload progress, focus indicators, links" },
+      "accent-hover": { "hex": "#1D4ED8", "role": "Hover/pressed state for accent elements" },
+      "accent-soft": { "hex": "#EFF6FF", "role": "Eyebrow tag backgrounds, selected states, subtle highlights" },
+      "on-accent": { "hex": "#FFFFFF", "role": "Text on accent-colored backgrounds" },
+      "border": { "css": "rgba(0,0,0,0.05)", "role": "Hairline rings on outer bezels — ring-1 ring-black/5" },
+      "border-inner": { "css": "rgba(255,255,255,0.15)", "role": "Inner highlight shadow on card cores" },
+      "destructive": { "hex": "#DC2626", "role": "Error text, invalid file indicator" },
+      "destructive-bg": { "hex": "#FEF2F2", "role": "Error message container background" }
     },
     "fonts": {
       "primary": {
         "family": "Geist",
-        "source": "google",
-        "import": "next/font/google",
-        "fallback": "system-ui, -apple-system, sans-serif"
+        "source": "local",
+        "weights": [400, 500, 600, 700],
+        "usage": "All text — headings (700, tracking-tight), body (400)"
       },
       "mono": {
         "family": "Geist Mono",
-        "source": "google",
-        "import": "next/font/google",
-        "fallback": "ui-monospace, monospace"
-      },
-      "banned": ["Inter", "any serif font"],
-      "scale": {
-        "display": { "size": "36px", "weight": 700, "lineHeight": 1.1, "letterSpacing": "-0.025em" },
-        "h1": { "size": "28px", "weight": 700, "lineHeight": 1.2, "letterSpacing": "-0.02em" },
-        "h2": { "size": "22px", "weight": 600, "lineHeight": 1.3, "letterSpacing": "-0.015em" },
-        "h3": { "size": "18px", "weight": 600, "lineHeight": 1.4, "letterSpacing": "-0.01em" },
-        "body": { "size": "16px", "weight": 400, "lineHeight": 1.65, "letterSpacing": "0" },
-        "body-small": { "size": "14px", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" },
-        "caption": { "size": "12px", "weight": 500, "lineHeight": 1.4, "letterSpacing": "0.02em" },
-        "label": { "size": "14px", "weight": 500, "lineHeight": 1.4, "letterSpacing": "0.01em" },
-        "mono": { "size": "14px", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" }
+        "source": "local",
+        "weights": [400],
+        "usage": "Code snippets within AI chat responses"
       }
+    },
+    "typography": {
+      "display": { "size": "3.5rem", "weight": 700, "lineHeight": 1.0, "letterSpacing": "-0.03em" },
+      "h1": { "size": "3rem", "weight": 700, "lineHeight": 1.05, "letterSpacing": "-0.025em" },
+      "h2": { "size": "2rem", "weight": 700, "lineHeight": 1.1, "letterSpacing": "-0.02em" },
+      "h3": { "size": "1.5rem", "weight": 600, "lineHeight": 1.2, "letterSpacing": "-0.01em" },
+      "body": { "size": "1rem", "weight": 400, "lineHeight": 1.625, "letterSpacing": "0" },
+      "body-small": { "size": "0.875rem", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" },
+      "caption": { "size": "0.75rem", "weight": 500, "lineHeight": 1.33, "letterSpacing": "0.01em" },
+      "eyebrow": { "size": "0.625rem", "weight": 500, "lineHeight": 1.6, "letterSpacing": "0.2em", "transform": "uppercase" },
+      "mono": { "size": "0.875rem", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" }
     },
     "spacing": {
-      "unit": "4px",
+      "base": "4px",
       "scale": {
-        "1": "4px",
-        "2": "8px",
-        "3": "12px",
-        "4": "16px",
-        "5": "20px",
-        "6": "24px",
-        "8": "32px",
-        "10": "40px",
-        "12": "48px",
-        "16": "64px",
-        "20": "80px"
-      }
+        "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px",
+        "6": "24px", "8": "32px", "10": "40px", "12": "48px", "16": "64px",
+        "24": "96px", "32": "128px", "40": "160px"
+      },
+      "section-padding-min": "96px",
+      "section-padding-max": "160px",
+      "card-padding": "32px",
+      "card-padding-large": "40px",
+      "bezel-padding": "8px",
+      "message-gap": "24px",
+      "container-max": "1400px",
+      "chat-column-max": "768px"
     },
     "radii": {
-      "sm": "6px",
-      "md": "10px",
-      "lg": "16px",
-      "full": "9999px"
+      "bezel-outer": "2rem",
+      "bezel-inner": "calc(2rem - 0.5rem)",
+      "bubble-outer": "1.5rem",
+      "bubble-inner": "calc(1.5rem - 0.375rem)",
+      "button": "9999px",
+      "eyebrow": "9999px",
+      "input": "1.5rem",
+      "mobile-bubble": "1.25rem"
+    },
+    "shadows": {
+      "diffused": "0 20px 60px -15px rgba(0,0,0,0.04)",
+      "diffused-hover": "0 25px 70px -15px rgba(0,0,0,0.06)",
+      "inner-highlight": "inset 0 1px 1px rgba(255,255,255,0.15)",
+      "input-focus": "0 0 0 1px rgba(37,99,235,0.1)",
+      "none": "none"
+    },
+    "motion": {
+      "easing-primary": "cubic-bezier(0.32, 0.72, 0, 1)",
+      "easing-entry": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration-micro": "200ms",
+      "duration-normal": "300ms",
+      "duration-major": "500ms",
+      "duration-reveal": "800ms",
+      "spring-interactive": { "type": "spring", "stiffness": 120, "damping": 20 },
+      "spring-progress": { "type": "spring", "stiffness": 80, "damping": 25 },
+      "spring-breathe": { "type": "spring", "stiffness": 60, "damping": 15 },
+      "stagger-children": "80ms",
+      "cursor-blink-interval": "530ms"
     }
   },
-  "components": [
-    {
-      "name": "UploadPage",
-      "path": "/",
-      "description": "Full viewport upload screen with asymmetric layout",
-      "children": [
-        {
-          "name": "PageContainer",
-          "tokens": { "maxWidth": "1200px", "padding": "space-8 / space-10" },
-          "children": [
-            {
-              "name": "UploadZone",
-              "tokens": { "bg": "transparent", "border": "border (dashed)", "radius": "radius-md", "padding": "space-12" },
-              "states": {
-                "default": { "border": "1px dashed border", "bg": "transparent" },
-                "drag-over": { "border": "2px solid border-active", "bg": "accent/4%" },
-                "error": { "border": "2px solid destructive" }
-              },
-              "children": [
-                {
-                  "name": "DropArea",
-                  "children": [
-                    { "name": "DropIcon", "icon": "UploadSimple", "weight": "light", "size": "48px", "color": "tertiary" },
-                    { "name": "Headline", "level": "display", "text": "Talk to your documents", "align": "left" },
-                    { "name": "Subtext", "level": "body-small", "text": "Drop a PDF here or browse your files", "color": "tertiary" },
-                    { "name": "FilePicker", "type": "hidden input", "accept": ".pdf" }
-                  ]
-                },
-                {
-                  "name": "FileInfo",
-                  "visibility": "after file selection",
-                  "children": [
-                    { "name": "FileIcon", "icon": "FilePdf", "weight": "duotone", "size": "20px", "color": "destructive" },
-                    { "name": "FileName", "level": "body-small", "maxWidth": "280px", "overflow": "ellipsis" },
-                    { "name": "FileSize", "level": "caption", "color": "tertiary" },
-                    { "name": "RemoveButton", "icon": "X", "size": "16px", "color": "tertiary", "hoverColor": "destructive" }
-                  ]
-                },
-                {
-                  "name": "UploadButton",
-                  "tokens": { "bg": "accent", "text": "on-primary", "radius": "radius-sm" },
-                  "label": "Upload and start chatting",
-                  "states": {
-                    "hover": { "bg": "accent-hover" },
-                    "active": { "transform": "scale(0.98)" },
-                    "loading": { "label": "hidden", "spinner": "horizontal bar, accent, 3px height" },
-                    "disabled": { "opacity": 0.4, "cursor": "not-allowed" }
-                  }
-                },
-                {
-                  "name": "ErrorMessage",
-                  "visibility": "on error",
-                  "tokens": { "bg": "destructive-bg", "text": "destructive", "radius": "radius-sm" },
-                  "children": [
-                    { "name": "ErrorIcon", "icon": "Warning", "weight": "fill", "size": "16px", "color": "destructive" },
-                    { "name": "ErrorText", "level": "caption" }
-                  ],
-                  "behavior": "auto-dismiss after 8s, fade out 300ms"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+  "components": {
+    "double_bezel": {
+      "description": "Nested card architecture — outer shell with hairline ring + inner core with own background and inner highlight shadow",
+      "outer_shell": {
+        "background": "shell",
+        "border": "ring-1 ring-black/5",
+        "padding": "p-2",
+        "radius": "rounded-[2rem]"
+      },
+      "inner_core": {
+        "background": "surface",
+        "shadow": "inner-highlight + diffused",
+        "radius": "rounded-[calc(2rem-0.5rem)]",
+        "padding": "p-8"
+      }
     },
-    {
-      "name": "ChatPage",
-      "path": "/chat",
-      "description": "Chat interface with streaming AI responses",
-      "children": [
-        {
-          "name": "ChatContainer",
-          "tokens": { "height": "min-h-[100dvh]", "display": "flex column" },
-          "children": [
-            {
-              "name": "ChatHeader",
-              "tokens": { "bg": "surface", "borderBottom": "border", "position": "sticky top" },
-              "children": [
-                {
-                  "name": "BackLink",
-                  "icon": "ArrowLeft",
-                  "iconSize": "20px",
-                  "label": "Upload new",
-                  "color": "tertiary",
-                  "hoverColor": "primary",
-                  "href": "/"
-                },
-                {
-                  "name": "DocInfo",
-                  "children": [
-                    { "name": "DocIcon", "icon": "FilePdf", "weight": "duotone", "size": "20px", "color": "destructive" },
-                    { "name": "DocName", "level": "h2", "overflow": "ellipsis" }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "MessageArea",
-              "tokens": { "flex": "grow", "overflow": "scroll-y", "maxWidth": "768px", "margin": "auto" },
-              "scrollbar": {
-                "width": "6px",
-                "thumbColor": "border",
-                "thumbHoverColor": "tertiary",
-                "trackColor": "transparent",
-                "radius": "full"
-              },
-              "children": [
-                {
-                  "name": "EmptyState",
-                  "visibility": "messages.length === 0",
-                  "children": [
-                    { "name": "EmptyIcon", "icon": "ChatTeardrop", "weight": "light", "size": "40px", "color": "tertiary" },
-                    { "name": "EmptyTitle", "level": "h3", "text": "Ask anything about this document" },
-                    { "name": "EmptySubtext", "level": "body-small", "color": "tertiary", "text": "Get summaries, find specific info, or ask follow-up questions" },
-                    {
-                      "name": "StarterChips",
-                      "layout": "horizontal wrap",
-                      "entrance": "stagger fade-in, 100ms delay, 300ms duration, translateY 8px",
-                      "children": [
-                        { "name": "Chip", "text": "Summarize this document", "tokens": { "bg": "surface-alt", "border": "border", "radius": "radius-full" } },
-                        { "name": "Chip", "text": "What are the key points?" },
-                        { "name": "Chip", "text": "Extract all dates and deadlines" }
-                      ]
-                    }
-                  ]
-                },
-                {
-                  "name": "MessageList",
-                  "visibility": "messages.length > 0",
-                  "gap": "space-6",
-                  "children": [
-                    {
-                      "name": "UserMessage",
-                      "align": "right",
-                      "tokens": { "bg": "surface-alt", "text": "primary", "radius": "radius-md", "padding": "space-3 space-4" }
-                    },
-                    {
-                      "name": "AIMessage",
-                      "align": "left",
-                      "tokens": { "bg": "surface", "text": "secondary", "border": "border", "radius": "radius-md", "padding": "space-3 space-4" },
-                      "children": [
-                        { "name": "MessageText", "level": "body", "monoSupport": true },
-                        {
-                          "name": "StreamingCursor",
-                          "visibility": "during streaming",
-                          "dimensions": "8px x 18px",
-                          "color": "accent",
-                          "animation": "opacity 1 to 0.2, 800ms, infinite, ease-in-out"
-                        }
-                      ]
-                    }
-                  ]
-                }
-              ]
-            },
-            {
-              "name": "InputBar",
-              "tokens": { "bg": "surface", "borderTop": "border", "position": "sticky bottom", "padding": "space-4" },
-              "children": [
-                {
-                  "name": "InputField",
-                  "type": "textarea (auto-grow)",
-                  "placeholder": "Ask a question...",
-                  "tokens": { "bg": "surface", "border": "border", "radius": "radius-sm", "padding": "space-2 space-4" },
-                  "focusState": { "borderColor": "border-active" }
-                },
-                {
-                  "name": "SendButton",
-                  "icon": "PaperPlaneTilt",
-                  "iconWeight": "fill",
-                  "iconSize": "20px",
-                  "tokens": { "bg": "accent", "text": "on-primary", "radius": "radius-sm" },
-                  "states": {
-                    "hover": { "bg": "accent-hover" },
-                    "active": { "transform": "scale(0.97)" },
-                    "disabled": { "opacity": 0.4, "cursor": "not-allowed", "iconWeight": "light" }
-                  }
-                }
-              ]
-            }
-          ]
-        }
-      ]
+    "button_in_button": {
+      "description": "CTA with nested icon circle — pill body + internal circular icon wrapper",
+      "body": {
+        "background": "accent",
+        "text": "on-accent",
+        "radius": "rounded-full",
+        "padding": "px-6 py-3"
+      },
+      "icon_circle": {
+        "size": "w-8 h-8",
+        "background": "bg-white/10",
+        "radius": "rounded-full",
+        "hover_transform": "translate-x-1 -translate-y-[1px] scale-105"
+      }
+    },
+    "eyebrow_tag": {
+      "description": "Pill-shaped badge before headings",
+      "background": "accent-soft",
+      "text": "accent",
+      "radius": "rounded-full",
+      "padding": "px-3 py-1",
+      "typography": "eyebrow"
     }
-  ],
-  "breakpoints": {
-    "mobile": { "min": "0px", "layout": "single column, full width, space-8 padding" },
-    "tablet": { "min": "768px", "layout": "upload gains 3fr/2fr split, chat messages gain 768px max-width" },
-    "desktop": { "min": "1024px", "layout": "container max-width activates (1200px upload, 768px chat), spacing scales up" }
   },
-  "interactions": {
-    "transitions": {
-      "color": { "duration": "150ms", "easing": "ease" },
-      "border": { "duration": "150ms", "easing": "ease" },
-      "opacity": { "duration": "200ms", "easing": "ease" },
-      "transform": { "duration": "200ms", "easing": "cubic-bezier(0.16, 1, 0.3, 1)" }
+  "screens": {
+    "upload": {
+      "route": "/",
+      "layout": "Editorial Split — text left (cols 1-5), drop zone right (cols 6-12)",
+      "grid": "grid grid-cols-12 gap-8",
+      "min_height": "min-h-[100dvh]",
+      "section_padding": "py-32",
+      "key_components": ["FloatingNav", "EyebrowTag", "DisplayHeading", "DropZone (Double-Bezel)", "BrowseButton (Button-in-Button)", "UploadProgress"],
+      "mobile_behavior": "Single column, display heading drops to 2.25rem, drop zone full-width with px-4"
     },
-    "streaming": {
-      "cursor": { "width": "8px", "height": "18px", "color": "accent", "animation": "opacity 1→0.2, 800ms, infinite, ease-in-out" },
-      "tokenFadeIn": { "duration": "50ms", "property": "opacity 0→1" },
-      "autoScroll": { "behavior": "smooth", "threshold": "100px from bottom" }
-    },
-    "loading": {
-      "uploadButton": "horizontal indeterminate bar, accent, 3px height",
-      "chatWaiting": "three-dot pulse, 6px circles, tertiary, staggered scale, 600ms cycle"
+    "chat": {
+      "route": "/chat",
+      "layout": "Single-column centered conversation, expansive lateral whitespace",
+      "message_column": "max-w-3xl mx-auto",
+      "header": "Sticky, glass effect (backdrop-blur), Double-Bezel",
+      "input_bar": "Fixed bottom, Double-Bezel, max-w-3xl mx-auto",
+      "key_components": ["ChatHeader (Double-Bezel, sticky glass)", "WelcomeState", "StarterChips", "UserMessage", "AIMessage (Double-Bezel)", "StreamingCursor", "SourceCitation", "InputBar (Double-Bezel)", "SendButton (Button-in-Button)"],
+      "mobile_behavior": "Full-width messages px-4, header actions collapse to overflow, reduced bubble radii"
     }
   },
   "icons": {
     "library": "@phosphor-icons/react",
-    "inventory": [
-      { "name": "UploadSimple", "weight": "light", "size": "48px", "context": "Drop zone default" },
-      { "name": "FilePdf", "weight": "duotone", "size": "20px", "context": "File indicator" },
-      { "name": "X", "weight": "regular", "size": "16px", "context": "Remove file" },
-      { "name": "Warning", "weight": "fill", "size": "16px", "context": "Error indicator" },
-      { "name": "ArrowLeft", "weight": "regular", "size": "20px", "context": "Back navigation" },
-      { "name": "ChatTeardrop", "weight": "light", "size": "40px", "context": "Empty state" },
-      { "name": "PaperPlaneTilt", "weight": "fill", "size": "20px", "context": "Send button" }
-    ]
+    "weight": "light",
+    "stroke_width": 1.5,
+    "verify_package": true
   },
-  "design_spec_markdown": "See handoffs/DESIGN_SPEC.md for the full 8-section human-readable specification.",
   "anti_patterns_enforced": [
-    "Inter font BANNED — using Geist + Geist Mono",
-    "AI Purple BANNED — accent is #2563EB (blue, saturation ~74%)",
-    "No emojis anywhere in UI",
-    "No serif fonts (software UI context)",
-    "No centered hero — asymmetric 3fr/2fr layout at DESIGN_VARIANCE 8",
-    "No h-screen — using min-h-[100dvh]",
-    "No pure black (#000000) — darkest is Slate-900 #0F172A",
-    "No neon/outer glows — feedback via border color shift and opacity",
-    "No circular loading spinners — horizontal bar for upload, dot pulse for chat",
-    "Grid over flex-math for all column layouts",
-    "Max 1 accent color, saturation < 80%"
+    "No Inter/Roboto/Arial fonts",
+    "No 1px solid gray borders — ring-1 ring-black/5 only",
+    "No harsh drop shadows",
+    "No 3-column card grids",
+    "No linear/ease-in-out transitions",
+    "No h-screen — min-h-[100dvh] only",
+    "No #000000 — darkest is #111111",
+    "No emojis in content or code",
+    "No centered heroes (VARIANCE 8)",
+    "No outer glows or neon effects",
+    "No AI purple anywhere",
+    "No useState for magnetic hover — useMotionValue only",
+    "No backdrop-blur on scrolling content",
+    "No window.addEventListener scroll"
   ]
 }

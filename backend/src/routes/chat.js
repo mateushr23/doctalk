@@ -88,10 +88,17 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('Groq API error:', err.message, err.status, err.error || '');
 
-    if (err.status === 429 || err.status === 413) {
+    // Rate limit (TPM exceeded on Groq free tier)
+    if (err.status === 429 || (err.error?.code === 'rate_limit_exceeded' && err.status === 413)) {
+      return res.status(429).json({
+        error: 'Too many requests. Wait a moment and try again.',
+      });
+    }
+
+    // Context too long
+    if (err.status === 413) {
       return res.status(413).json({
-        error:
-          'This PDF is too large for the AI to process. Try a shorter document.',
+        error: 'This PDF is too large for the AI to process. Try a shorter document.',
       });
     }
 

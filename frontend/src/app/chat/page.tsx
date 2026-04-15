@@ -1,16 +1,18 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useRef, useState, memo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft,
+  CaretLeft,
   FilePdf,
-  PaperPlaneTilt,
+  ArrowUp,
 } from "@phosphor-icons/react";
 import { fetchSSE, type SSEChunk } from "@/lib/sse";
 import { EmptyState } from "@/components/EmptyState";
 
+/* ─── Copy ─── */
 const COPY = {
   backLink: "Upload new",
   inputPlaceholder: "Ask a question...",
@@ -20,18 +22,45 @@ const COPY = {
   ariaBack: "Go back to upload a new document",
   streamingAriaLabel: "AI is responding...",
   completeAriaLabel: "Response complete",
-  emptyMessage: "Type a question before sending.",
   streamInterrupted: "The response was interrupted. Send your question again.",
 } as const;
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 const AUTO_SCROLL_THRESHOLD = 100;
 
+/* ─── Motion presets ─── */
+const entryEase = [0.16, 1, 0.3, 1] as const;
+const softEase = [0.32, 0.72, 0, 1] as const;
+const springConfig = { type: "spring" as const, stiffness: 120, damping: 20 };
+
+const messageEntry = {
+  hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
+  visible: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.6, ease: entryEase },
+  },
+};
+
+/* ─── Avatar dot with breathing pulse ─── */
+const AvatarDot = memo(function AvatarDot() {
+  return (
+    <motion.div
+      animate={{ scale: [1, 1.15, 1] }}
+      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+      className="w-3 h-3 rounded-full bg-accent shrink-0 mt-1"
+    />
+  );
+});
+
+/* ─── Types ─── */
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
+/* ─── Chat content ─── */
 function ChatPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,18 +77,12 @@ function ChatPageContent() {
   const [isStreaming, setIsStreaming] = useState(false);
   const [isWaitingFirstToken, setIsWaitingFirstToken] = useState(false);
 
-  // Redirect if no sessionId
   useEffect(() => {
-    if (!sessionId) {
-      router.replace("/");
-    }
+    if (!sessionId) router.replace("/");
   }, [sessionId, router]);
 
-  // Abort in-flight SSE fetch on unmount
   useEffect(() => {
-    return () => {
-      abortControllerRef.current?.abort();
-    };
+    return () => { abortControllerRef.current?.abort(); };
   }, []);
 
   const isNearBottom = useCallback(() => {
@@ -85,10 +108,7 @@ function ChatPageContent() {
       setIsStreaming(true);
       setIsWaitingFirstToken(true);
 
-      // Reset textarea height
-      if (textareaRef.current) {
-        textareaRef.current.style.height = "auto";
-      }
+      if (textareaRef.current) textareaRef.current.style.height = "auto";
 
       const assistantMessage: Message = { role: "assistant", content: "" };
       setMessages([...updatedMessages, assistantMessage]);
@@ -96,7 +116,6 @@ function ChatPageContent() {
       const controller = new AbortController();
       abortControllerRef.current = controller;
 
-      // Build history for API (exclude the current empty assistant message)
       const history = updatedMessages.map((m) => ({
         role: m.role,
         content: m.content,
@@ -107,7 +126,7 @@ function ChatPageContent() {
         body: {
           sessionId,
           message: text.trim(),
-          history: history.slice(0, -1), // Exclude the latest user message (sent separately)
+          history: history.slice(0, -1),
         },
         signal: controller.signal,
         onChunk: (chunk: SSEChunk) => {
@@ -135,7 +154,6 @@ function ChatPageContent() {
           setIsStreaming(false);
           setIsWaitingFirstToken(false);
           abortControllerRef.current = null;
-          // Add error as assistant message
           setMessages((prev) => {
             const updated = [...prev];
             const last = updated[updated.length - 1];
@@ -171,7 +189,6 @@ function ChatPageContent() {
   const handleTextareaChange = useCallback(
     (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInput(e.target.value);
-      // Auto-grow
       const el = e.target;
       el.style.height = "auto";
       el.style.height = `${Math.min(el.scrollHeight, 160)}px`;
@@ -179,7 +196,6 @@ function ChatPageContent() {
     []
   );
 
-  // Scroll on messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages, scrollToBottom]);
@@ -187,108 +203,149 @@ function ChatPageContent() {
   if (!sessionId) return null;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-bg">
-      {/* Header */}
-      <header className="sticky top-0 z-10 bg-surface border-b border-border px-spacing-4 md:px-spacing-6 py-spacing-3 flex items-center justify-between gap-spacing-4">
-        <Link
-          href="/"
-          aria-label={COPY.ariaBack}
-          className="flex items-center gap-spacing-2 text-[14px] leading-[1.5] text-tertiary hover:text-primary transition-colors duration-150 shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-        >
-          <ArrowLeft size={20} weight="regular" />
-          <span className="hidden md:inline">{COPY.backLink}</span>
-        </Link>
-        <div className="flex items-center gap-spacing-2 min-w-0">
-          <FilePdf size={20} weight="duotone" className="text-destructive shrink-0" />
-          <h2 className="text-[22px] font-semibold leading-[1.3] tracking-[-0.015em] text-primary truncate">
-            {filename}
-          </h2>
+    <div className="min-h-[100dvh] flex flex-col bg-[#FAFAFA]">
+      {/* ─── ChatHeader: Double-Bezel, sticky, glass ─── */}
+      <header className="sticky top-0 z-10 px-4 md:px-6 pt-3 pb-0">
+        <div className="rounded-[2rem] p-1.5 bg-[#F5F5F5]/80 ring-1 ring-black/5 backdrop-blur-xl">
+          <div className="bg-white rounded-[calc(2rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-4 md:px-6 py-3">
+            <div className="max-w-[1400px] mx-auto flex items-center gap-4">
+              {/* Back button */}
+              <Link
+                href="/"
+                aria-label={COPY.ariaBack}
+                className="flex items-center justify-center w-10 h-10 rounded-full text-text-3 hover:text-text-1 hover:bg-shell transition-colors duration-300 shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
+              >
+                <CaretLeft size={20} weight="regular" />
+              </Link>
+
+              {/* Document info */}
+              <div className="flex items-center gap-3 min-w-0">
+                <FilePdf size={20} weight="duotone" className="text-destructive shrink-0" />
+                <div className="min-w-0">
+                  <h1 className="text-base font-semibold text-text-1 truncate tracking-tight">
+                    {filename}
+                  </h1>
+                </div>
+              </div>
+
+              {/* Back link text (desktop) */}
+              <Link
+                href="/"
+                className="ml-auto hidden md:inline-flex text-sm text-text-3 hover:text-text-1 transition-colors duration-300"
+                style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
+              >
+                {COPY.backLink}
+              </Link>
+            </div>
+          </div>
         </div>
-        {/* Spacer to balance the header */}
-        <div className="w-[70px] shrink-0 hidden md:block" aria-hidden="true" />
       </header>
 
-      {/* Message area */}
+      {/* ─── Message area ─── */}
       <div
         ref={messageAreaRef}
-        className="flex-1 overflow-y-auto chat-scrollbar"
+        className="flex-1 overflow-y-auto custom-scrollbar"
         aria-label={COPY.ariaMessages}
         role="log"
         aria-live="polite"
       >
-        <div className="max-w-[768px] mx-auto px-spacing-4 md:px-spacing-6 py-spacing-6">
+        <div className="max-w-3xl mx-auto px-4 md:px-6 py-6">
           {messages.length === 0 ? (
             <EmptyState filename={filename} onSelectChip={sendMessage} />
           ) : (
-            <div className="flex flex-col gap-spacing-6">
-              {messages.map((msg, i) => (
-                <div
-                  key={i}
-                  className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  {msg.role === "user" ? (
-                    <div className="max-w-[85%] md:max-w-[70%] bg-surface-alt text-primary rounded-md px-spacing-4 py-spacing-3 text-[16px] leading-[1.65]">
-                      {msg.content}
-                    </div>
-                  ) : (
-                    <div className="max-w-[85%] md:max-w-[70%] bg-surface text-secondary border border-border rounded-md px-spacing-4 py-spacing-3 text-[16px] leading-[1.65]">
-                      {msg.content}
-                      {isStreaming && i === messages.length - 1 && (
-                        <>
-                          <span
-                            className="streaming-cursor"
-                            aria-hidden="true"
-                          />
-                          <span className="sr-only">
-                            {COPY.streamingAriaLabel}
-                          </span>
-                        </>
-                      )}
-                      {isWaitingFirstToken && i === messages.length - 1 && !msg.content && (
-                        <div className="dot-pulse flex gap-spacing-1" aria-label={COPY.streamingAriaLabel}>
-                          <span />
-                          <span />
-                          <span />
+            <div className="flex flex-col gap-6">
+              <AnimatePresence initial={false}>
+                {messages.map((msg, i) => (
+                  <motion.div
+                    key={i}
+                    variants={messageEntry}
+                    initial="hidden"
+                    animate="visible"
+                    className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+                  >
+                    {msg.role === "user" ? (
+                      /* ─── User bubble: single-layer, shell bg ─── */
+                      <div className="max-w-[85%] md:max-w-[70%] bg-[#F5F5F5] text-text-1 rounded-[1.5rem] px-5 py-3 text-base leading-relaxed ring-1 ring-black/5">
+                        {msg.content}
+                      </div>
+                    ) : (
+                      /* ─── AI bubble: Double-Bezel ─── */
+                      <div className="flex gap-3 max-w-[85%] md:max-w-[75%]">
+                        <AvatarDot />
+                        <div className="rounded-[1.5rem] p-1.5 bg-[#F5F5F5] ring-1 ring-black/5">
+                          <div className="bg-white rounded-[calc(1.5rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-5 py-3">
+                            <p className="text-base leading-relaxed text-text-2 whitespace-pre-wrap">
+                              {msg.content}
+                              {isStreaming && i === messages.length - 1 && msg.content && (
+                                <>
+                                  <span className="streaming-cursor" aria-hidden="true" />
+                                  <span className="sr-only">{COPY.streamingAriaLabel}</span>
+                                </>
+                              )}
+                            </p>
+                            {/* Waiting state: skeleton shimmer */}
+                            {isWaitingFirstToken && i === messages.length - 1 && !msg.content && (
+                              <div className="flex flex-col gap-2" aria-label={COPY.streamingAriaLabel}>
+                                <div className="h-4 w-3/4 rounded-full skeleton-shimmer" />
+                                <div className="h-4 w-1/2 rounded-full skeleton-shimmer" />
+                              </div>
+                            )}
+                            {/* Completion SR announcement */}
+                            {!isStreaming && i === messages.length - 1 && msg.content && (
+                              <span className="sr-only">{COPY.completeAriaLabel}</span>
+                            )}
+                          </div>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
+                      </div>
+                    )}
+                  </motion.div>
+                ))}
+              </AnimatePresence>
               <div ref={messagesEndRef} />
             </div>
           )}
         </div>
       </div>
 
-      {/* Input bar */}
-      <div className="sticky bottom-0 bg-surface border-t border-border px-spacing-4 md:px-spacing-6 py-spacing-4">
-        <div className="max-w-[768px] mx-auto flex items-end gap-spacing-3">
-          <label htmlFor="chat-input" className="sr-only">
-            Ask a question about your document
-          </label>
-          <textarea
-            id="chat-input"
-            ref={textareaRef}
-            value={input}
-            onChange={handleTextareaChange}
-            onKeyDown={handleKeyDown}
-            placeholder={COPY.inputPlaceholder}
-            disabled={isStreaming}
-            rows={1}
-            className="flex-1 resize-none bg-surface text-primary border border-border rounded-sm px-spacing-4 py-spacing-2 text-[16px] leading-[1.65] placeholder:text-tertiary transition-colors duration-150 focus:border-border-active focus:outline-none disabled:opacity-60"
-          />
-          <button
-            onClick={handleSubmit}
-            disabled={isStreaming || !input.trim()}
-            aria-label={isStreaming ? COPY.sendDisabledLabel : COPY.sendLabel}
-            className="shrink-0 bg-accent text-on-primary rounded-sm p-spacing-2 transition-all duration-200 hover:bg-accent-hover active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      {/* ─── InputBar: Double-Bezel, fixed bottom ─── */}
+      <div className="sticky bottom-0 px-4 md:px-6 pb-4 pt-2">
+        <div className="max-w-3xl mx-auto">
+          <div className="rounded-[2rem] p-2 bg-[#F5F5F5] ring-1 ring-black/5 transition-all duration-300"
+            style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
           >
-            <PaperPlaneTilt
-              size={20}
-              weight={isStreaming || !input.trim() ? "light" : "fill"}
-            />
-          </button>
+            <div className="bg-white rounded-[calc(2rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex items-end gap-3 px-5 py-3">
+              <label htmlFor="chat-input" className="sr-only">
+                Ask a question about your document
+              </label>
+              <textarea
+                id="chat-input"
+                ref={textareaRef}
+                value={input}
+                onChange={handleTextareaChange}
+                onKeyDown={handleKeyDown}
+                placeholder={COPY.inputPlaceholder}
+                disabled={isStreaming}
+                rows={1}
+                className="flex-1 resize-none bg-transparent text-text-1 text-base leading-relaxed placeholder:text-text-3 focus:outline-none disabled:opacity-60"
+              />
+              {/* SendButton: Button-in-Button */}
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={springConfig}
+                onClick={handleSubmit}
+                disabled={isStreaming || !input.trim()}
+                aria-label={isStreaming ? COPY.sendDisabledLabel : COPY.sendLabel}
+                className="group shrink-0 flex items-center justify-center bg-accent text-on-accent rounded-full p-2.5 transition-colors duration-300 hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
+              >
+                <span className="flex items-center justify-center w-5 h-5">
+                  <ArrowUp size={20} weight="bold" className="text-on-accent" />
+                </span>
+              </motion.button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
