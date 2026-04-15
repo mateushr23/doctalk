@@ -1,0 +1,311 @@
+{
+  "stage": "design",
+  "project": "DocTalk — Chat com PDF",
+  "created_at": "2026-04-15",
+  "dials": {
+    "design_variance": 8,
+    "motion_intensity": 6,
+    "visual_density": 4
+  },
+  "style_mode": "ui-ux-pro-max",
+  "style_base": "Flat Design",
+  "tokens": {
+    "colors": {
+      "bg": { "hex": "#F8FAFC", "role": "Page background, full viewport fill" },
+      "surface": { "hex": "#FFFFFF", "role": "Cards, drop zone, chat bubbles (AI), input bar" },
+      "surface-alt": { "hex": "#F1F2F3", "role": "User message bubbles, starter chips bg, hover feedback" },
+      "primary": { "hex": "#1E293B", "role": "Primary text, headings, document name" },
+      "secondary": { "hex": "#334155", "role": "Body text, AI message text, secondary labels" },
+      "tertiary": { "hex": "#64748B", "role": "Timestamps, helper text, placeholder, muted labels" },
+      "accent": { "hex": "#2563EB", "role": "CTA buttons, focus rings, links, upload progress" },
+      "accent-hover": { "hex": "#1D4ED8", "role": "Hover state for accent elements" },
+      "on-primary": { "hex": "#FFFFFF", "role": "Text on accent backgrounds" },
+      "border": { "hex": "#E4E5E7", "role": "Drop zone border, input borders, dividers" },
+      "border-active": { "hex": "#2563EB", "role": "Focused input border, drag-over drop zone" },
+      "destructive": { "hex": "#DC2626", "role": "Error text, error border" },
+      "destructive-bg": { "hex": "#FEF2F2", "role": "Error message background" },
+      "ring": { "hex": "#1E293B", "role": "Focus ring for keyboard navigation" }
+    },
+    "fonts": {
+      "primary": {
+        "family": "Geist",
+        "source": "google",
+        "import": "next/font/google",
+        "fallback": "system-ui, -apple-system, sans-serif"
+      },
+      "mono": {
+        "family": "Geist Mono",
+        "source": "google",
+        "import": "next/font/google",
+        "fallback": "ui-monospace, monospace"
+      },
+      "banned": ["Inter", "any serif font"],
+      "scale": {
+        "display": { "size": "36px", "weight": 700, "lineHeight": 1.1, "letterSpacing": "-0.025em" },
+        "h1": { "size": "28px", "weight": 700, "lineHeight": 1.2, "letterSpacing": "-0.02em" },
+        "h2": { "size": "22px", "weight": 600, "lineHeight": 1.3, "letterSpacing": "-0.015em" },
+        "h3": { "size": "18px", "weight": 600, "lineHeight": 1.4, "letterSpacing": "-0.01em" },
+        "body": { "size": "16px", "weight": 400, "lineHeight": 1.65, "letterSpacing": "0" },
+        "body-small": { "size": "14px", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" },
+        "caption": { "size": "12px", "weight": 500, "lineHeight": 1.4, "letterSpacing": "0.02em" },
+        "label": { "size": "14px", "weight": 500, "lineHeight": 1.4, "letterSpacing": "0.01em" },
+        "mono": { "size": "14px", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" }
+      }
+    },
+    "spacing": {
+      "unit": "4px",
+      "scale": {
+        "1": "4px",
+        "2": "8px",
+        "3": "12px",
+        "4": "16px",
+        "5": "20px",
+        "6": "24px",
+        "8": "32px",
+        "10": "40px",
+        "12": "48px",
+        "16": "64px",
+        "20": "80px"
+      }
+    },
+    "radii": {
+      "sm": "6px",
+      "md": "10px",
+      "lg": "16px",
+      "full": "9999px"
+    }
+  },
+  "components": [
+    {
+      "name": "UploadPage",
+      "path": "/",
+      "description": "Full viewport upload screen with asymmetric layout",
+      "children": [
+        {
+          "name": "PageContainer",
+          "tokens": { "maxWidth": "1200px", "padding": "space-8 / space-10" },
+          "children": [
+            {
+              "name": "UploadZone",
+              "tokens": { "bg": "transparent", "border": "border (dashed)", "radius": "radius-md", "padding": "space-12" },
+              "states": {
+                "default": { "border": "1px dashed border", "bg": "transparent" },
+                "drag-over": { "border": "2px solid border-active", "bg": "accent/4%" },
+                "error": { "border": "2px solid destructive" }
+              },
+              "children": [
+                {
+                  "name": "DropArea",
+                  "children": [
+                    { "name": "DropIcon", "icon": "UploadSimple", "weight": "light", "size": "48px", "color": "tertiary" },
+                    { "name": "Headline", "level": "display", "text": "Talk to your documents", "align": "left" },
+                    { "name": "Subtext", "level": "body-small", "text": "Drop a PDF here or browse your files", "color": "tertiary" },
+                    { "name": "FilePicker", "type": "hidden input", "accept": ".pdf" }
+                  ]
+                },
+                {
+                  "name": "FileInfo",
+                  "visibility": "after file selection",
+                  "children": [
+                    { "name": "FileIcon", "icon": "FilePdf", "weight": "duotone", "size": "20px", "color": "destructive" },
+                    { "name": "FileName", "level": "body-small", "maxWidth": "280px", "overflow": "ellipsis" },
+                    { "name": "FileSize", "level": "caption", "color": "tertiary" },
+                    { "name": "RemoveButton", "icon": "X", "size": "16px", "color": "tertiary", "hoverColor": "destructive" }
+                  ]
+                },
+                {
+                  "name": "UploadButton",
+                  "tokens": { "bg": "accent", "text": "on-primary", "radius": "radius-sm" },
+                  "label": "Upload and start chatting",
+                  "states": {
+                    "hover": { "bg": "accent-hover" },
+                    "active": { "transform": "scale(0.98)" },
+                    "loading": { "label": "hidden", "spinner": "horizontal bar, accent, 3px height" },
+                    "disabled": { "opacity": 0.4, "cursor": "not-allowed" }
+                  }
+                },
+                {
+                  "name": "ErrorMessage",
+                  "visibility": "on error",
+                  "tokens": { "bg": "destructive-bg", "text": "destructive", "radius": "radius-sm" },
+                  "children": [
+                    { "name": "ErrorIcon", "icon": "Warning", "weight": "fill", "size": "16px", "color": "destructive" },
+                    { "name": "ErrorText", "level": "caption" }
+                  ],
+                  "behavior": "auto-dismiss after 8s, fade out 300ms"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ChatPage",
+      "path": "/chat",
+      "description": "Chat interface with streaming AI responses",
+      "children": [
+        {
+          "name": "ChatContainer",
+          "tokens": { "height": "min-h-[100dvh]", "display": "flex column" },
+          "children": [
+            {
+              "name": "ChatHeader",
+              "tokens": { "bg": "surface", "borderBottom": "border", "position": "sticky top" },
+              "children": [
+                {
+                  "name": "BackLink",
+                  "icon": "ArrowLeft",
+                  "iconSize": "20px",
+                  "label": "Upload new",
+                  "color": "tertiary",
+                  "hoverColor": "primary",
+                  "href": "/"
+                },
+                {
+                  "name": "DocInfo",
+                  "children": [
+                    { "name": "DocIcon", "icon": "FilePdf", "weight": "duotone", "size": "20px", "color": "destructive" },
+                    { "name": "DocName", "level": "h2", "overflow": "ellipsis" }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "MessageArea",
+              "tokens": { "flex": "grow", "overflow": "scroll-y", "maxWidth": "768px", "margin": "auto" },
+              "scrollbar": {
+                "width": "6px",
+                "thumbColor": "border",
+                "thumbHoverColor": "tertiary",
+                "trackColor": "transparent",
+                "radius": "full"
+              },
+              "children": [
+                {
+                  "name": "EmptyState",
+                  "visibility": "messages.length === 0",
+                  "children": [
+                    { "name": "EmptyIcon", "icon": "ChatTeardrop", "weight": "light", "size": "40px", "color": "tertiary" },
+                    { "name": "EmptyTitle", "level": "h3", "text": "Ask anything about this document" },
+                    { "name": "EmptySubtext", "level": "body-small", "color": "tertiary", "text": "Get summaries, find specific info, or ask follow-up questions" },
+                    {
+                      "name": "StarterChips",
+                      "layout": "horizontal wrap",
+                      "entrance": "stagger fade-in, 100ms delay, 300ms duration, translateY 8px",
+                      "children": [
+                        { "name": "Chip", "text": "Summarize this document", "tokens": { "bg": "surface-alt", "border": "border", "radius": "radius-full" } },
+                        { "name": "Chip", "text": "What are the key points?" },
+                        { "name": "Chip", "text": "Extract all dates and deadlines" }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "name": "MessageList",
+                  "visibility": "messages.length > 0",
+                  "gap": "space-6",
+                  "children": [
+                    {
+                      "name": "UserMessage",
+                      "align": "right",
+                      "tokens": { "bg": "surface-alt", "text": "primary", "radius": "radius-md", "padding": "space-3 space-4" }
+                    },
+                    {
+                      "name": "AIMessage",
+                      "align": "left",
+                      "tokens": { "bg": "surface", "text": "secondary", "border": "border", "radius": "radius-md", "padding": "space-3 space-4" },
+                      "children": [
+                        { "name": "MessageText", "level": "body", "monoSupport": true },
+                        {
+                          "name": "StreamingCursor",
+                          "visibility": "during streaming",
+                          "dimensions": "8px x 18px",
+                          "color": "accent",
+                          "animation": "opacity 1 to 0.2, 800ms, infinite, ease-in-out"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "InputBar",
+              "tokens": { "bg": "surface", "borderTop": "border", "position": "sticky bottom", "padding": "space-4" },
+              "children": [
+                {
+                  "name": "InputField",
+                  "type": "textarea (auto-grow)",
+                  "placeholder": "Ask a question...",
+                  "tokens": { "bg": "surface", "border": "border", "radius": "radius-sm", "padding": "space-2 space-4" },
+                  "focusState": { "borderColor": "border-active" }
+                },
+                {
+                  "name": "SendButton",
+                  "icon": "PaperPlaneTilt",
+                  "iconWeight": "fill",
+                  "iconSize": "20px",
+                  "tokens": { "bg": "accent", "text": "on-primary", "radius": "radius-sm" },
+                  "states": {
+                    "hover": { "bg": "accent-hover" },
+                    "active": { "transform": "scale(0.97)" },
+                    "disabled": { "opacity": 0.4, "cursor": "not-allowed", "iconWeight": "light" }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "breakpoints": {
+    "mobile": { "min": "0px", "layout": "single column, full width, space-8 padding" },
+    "tablet": { "min": "768px", "layout": "upload gains 3fr/2fr split, chat messages gain 768px max-width" },
+    "desktop": { "min": "1024px", "layout": "container max-width activates (1200px upload, 768px chat), spacing scales up" }
+  },
+  "interactions": {
+    "transitions": {
+      "color": { "duration": "150ms", "easing": "ease" },
+      "border": { "duration": "150ms", "easing": "ease" },
+      "opacity": { "duration": "200ms", "easing": "ease" },
+      "transform": { "duration": "200ms", "easing": "cubic-bezier(0.16, 1, 0.3, 1)" }
+    },
+    "streaming": {
+      "cursor": { "width": "8px", "height": "18px", "color": "accent", "animation": "opacity 1→0.2, 800ms, infinite, ease-in-out" },
+      "tokenFadeIn": { "duration": "50ms", "property": "opacity 0→1" },
+      "autoScroll": { "behavior": "smooth", "threshold": "100px from bottom" }
+    },
+    "loading": {
+      "uploadButton": "horizontal indeterminate bar, accent, 3px height",
+      "chatWaiting": "three-dot pulse, 6px circles, tertiary, staggered scale, 600ms cycle"
+    }
+  },
+  "icons": {
+    "library": "@phosphor-icons/react",
+    "inventory": [
+      { "name": "UploadSimple", "weight": "light", "size": "48px", "context": "Drop zone default" },
+      { "name": "FilePdf", "weight": "duotone", "size": "20px", "context": "File indicator" },
+      { "name": "X", "weight": "regular", "size": "16px", "context": "Remove file" },
+      { "name": "Warning", "weight": "fill", "size": "16px", "context": "Error indicator" },
+      { "name": "ArrowLeft", "weight": "regular", "size": "20px", "context": "Back navigation" },
+      { "name": "ChatTeardrop", "weight": "light", "size": "40px", "context": "Empty state" },
+      { "name": "PaperPlaneTilt", "weight": "fill", "size": "20px", "context": "Send button" }
+    ]
+  },
+  "design_spec_markdown": "See handoffs/DESIGN_SPEC.md for the full 8-section human-readable specification.",
+  "anti_patterns_enforced": [
+    "Inter font BANNED — using Geist + Geist Mono",
+    "AI Purple BANNED — accent is #2563EB (blue, saturation ~74%)",
+    "No emojis anywhere in UI",
+    "No serif fonts (software UI context)",
+    "No centered hero — asymmetric 3fr/2fr layout at DESIGN_VARIANCE 8",
+    "No h-screen — using min-h-[100dvh]",
+    "No pure black (#000000) — darkest is Slate-900 #0F172A",
+    "No neon/outer glows — feedback via border color shift and opacity",
+    "No circular loading spinners — horizontal bar for upload, dot pulse for chat",
+    "Grid over flex-math for all column layouts",
+    "Max 1 accent color, saturation < 80%"
+  ]
+}

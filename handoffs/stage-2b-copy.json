@@ -1,0 +1,110 @@
+{
+  "stage": "copy",
+  "project": "DocTalk — Chat com PDF",
+  "created_at": "2026-04-15",
+  "voice": {
+    "voice_attributes": [
+      "Direct — say what it does, not what it could do",
+      "Warm — approachable, not robotic or corporate",
+      "Concrete — specific nouns and verbs, no abstractions",
+      "Functional — copy serves the interface, not a marketing page",
+      "Brief — every word earns its place"
+    ],
+    "forbidden_phrases": [
+      "unleash",
+      "elevate",
+      "seamless",
+      "cutting-edge",
+      "next-gen",
+      "leverage",
+      "utilize",
+      "revolutionary",
+      "powerful",
+      "effortless",
+      "game-changing",
+      "unlock",
+      "supercharge",
+      "AI-powered"
+    ],
+    "preferred_vocabulary": {
+      "use": [
+        "upload",
+        "ask",
+        "read",
+        "chat",
+        "answer",
+        "document",
+        "PDF",
+        "question",
+        "summary",
+        "find"
+      ],
+      "avoid": [
+        "leverage",
+        "utilize",
+        "harness",
+        "interact with",
+        "engage",
+        "explore",
+        "discover",
+        "dive into",
+        "delve"
+      ]
+    },
+    "tone_notes": "This is a utility tool. Users arrive with a PDF and a question. Copy should get out of the way and help them do that quickly. No personality theatrics."
+  },
+  "components": {
+    "UploadPage": {
+      "headline": "Talk to your documents",
+      "subhead": "Drop a PDF here or browse your files",
+      "drop_zone_drag_over": "Drop your PDF",
+      "upload_button": "Upload and start chatting",
+      "upload_button_loading": "Uploading...",
+      "file_info_size_format": "{size} MB",
+      "file_info_remove_label": "Remove file",
+      "file_constraint_hint": "PDF files up to 20 MB"
+    },
+    "ChatPage": {
+      "header_back_link": "Upload new",
+      "input_placeholder": "Ask a question...",
+      "send_button_label": "Send",
+      "empty_state_title": "Ask anything about this document",
+      "empty_state_subtext": "Get summaries, find specific info, or ask follow-up questions.",
+      "starter_chips": [
+        "Summarize this document",
+        "What are the key points?",
+        "Extract all dates and deadlines"
+      ],
+      "streaming_waiting": "Reading your document...",
+      "streaming_complete_sr_only": "Response complete"
+    }
+  },
+  "microcopy": {
+    "error.non_pdf": "This file isn't a PDF. Please upload a PDF document.",
+    "error.too_large": "This file is over 20 MB. Try a smaller PDF.",
+    "error.server": "Something went wrong. Please try again.",
+    "error.session_not_found": "Session not found. Please upload your PDF again.",
+    "error.rate_limited": "Too many requests. Wait a moment and try again.",
+    "error.context_too_long": "This PDF is too large for the AI to process. Try a shorter document.",
+    "error.upload_failed": "Upload failed. Check your connection and try again.",
+    "error.empty_message": "Type a question before sending.",
+    "error.stream_interrupted": "The response was interrupted. Send your question again.",
+    "state.uploading": "Uploading...",
+    "state.processing": "Reading your document...",
+    "state.redirecting": "Opening chat...",
+    "state.no_session_redirect": "No document loaded. Redirecting to upload.",
+    "aria.drop_zone": "PDF upload area. Drag and drop a PDF file or click to browse.",
+    "aria.file_selected": "{filename} selected, {size} MB",
+    "aria.send_button": "Send message",
+    "aria.send_button_disabled": "Send message (waiting for response)",
+    "aria.back_link": "Go back to upload a new document",
+    "aria.chat_messages": "Conversation with AI about your document",
+    "aria.streaming": "AI is responding..."
+  },
+  "seo": {
+    "title": "DocTalk — Chat with your PDF documents",
+    "meta_description": "Upload a PDF and ask questions about it. Get instant answers from your documents with AI-powered chat.",
+    "og_title": "DocTalk — Chat with your PDF",
+    "og_description": "Upload a PDF, ask questions, get answers. A simple tool to read and understand your documents faster."
+  }
+}

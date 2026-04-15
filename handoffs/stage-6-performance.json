@@ -1,0 +1,52 @@
+{
+  "stage": "performance",
+  "project": "DocTalk",
+  "audited_at": "2026-04-15",
+  "seo": {
+    "title": "present",
+    "title_length": 43,
+    "meta_description": "present",
+    "meta_description_length": 97,
+    "og_tags": "present",
+    "issues": [
+      "meta description contains 'AI-powered' which is in the copy forbidden_phrases list — consider rewording to match voice charter"
+    ]
+  },
+  "performance": {
+    "font_strategy": "optimal",
+    "font_notes": "next/font/google with Geist + Geist_Mono, latin subset only — zero render-blocking font requests, proper swap via CSS variables",
+    "estimated_lcp": "good — LCP element is the h1 headline text, no images or heavy assets on either page",
+    "cls_risks": [
+      "Upload page error banner uses animate-[fadeIn] which inserts content below the button — pushes page content down causing minor CLS. Consider reserving space or using an overlay/toast instead.",
+      "Chat page EmptyState disappears when first message is sent — the layout shift from empty→messages is unavoidable but the transition is instant, acceptable."
+    ],
+    "bundle_concerns": [
+      "@phosphor-icons/react is imported per-icon (UploadSimple, FilePdf, X, etc.) which is correct for tree-shaking — no issue here",
+      "Both page.tsx files are 'use client' — entire pages are client components. The upload page could potentially have a server component wrapper with the client drop-zone nested, but for a 2-page app the impact is negligible.",
+      "No dynamic imports used, but nothing warrants lazy-loading at this scale"
+    ]
+  },
+  "accessibility": {
+    "semantic_html": true,
+    "semantic_html_notes": "Upload page uses <main>, chat page uses <header> and role='log' for message area. Good structure.",
+    "aria_labels": true,
+    "aria_labels_notes": "Drop zone has aria-label, remove button has aria-label, send button has dynamic aria-label, back link has aria-label, message area has role='log' + aria-live='polite', streaming has sr-only text, loading state has sr-only text",
+    "issues": [
+      "Hidden file input has aria-hidden='true' but no associated visible label element — acceptable since the drop zone serves as the label",
+      "Chat page textarea has no <label> element — only placeholder text. Add a sr-only <label> for screen readers.",
+      "Starter chips in EmptyState have no aria-label explaining they are suggested questions — the text content is self-descriptive so this is minor",
+      "Chat page header uses <h2> without a preceding <h1> — heading hierarchy skip"
+    ]
+  },
+  "copy_match": {
+    "status": "aligned",
+    "notes": "All copy in components matches stage-2b-copy.json exactly — headline, subhead, button labels, error messages, aria labels, empty state, and chips all match the copywriter deliverable."
+  },
+  "recommendations": [
+    "Add a sr-only <label> for the chat textarea (e.g., 'Ask a question about your document')",
+    "Add an <h1> to the chat page (visually hidden if needed) to fix heading hierarchy — currently jumps from none to <h2>",
+    "Rephrase meta description to remove 'AI-powered' per the voice charter forbidden phrases. Suggested: 'Upload a PDF and ask questions about it. Get instant answers from your documents through chat.'",
+    "Reserve vertical space for the error banner on the upload page (or use position:absolute) to prevent layout shift when errors appear",
+    "Consider adding viewport meta export in layout.tsx for completeness — Next.js handles this automatically but an explicit export documents intent"
+  ]
+}
