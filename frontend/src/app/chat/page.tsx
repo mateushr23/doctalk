@@ -5,9 +5,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  CaretLeft,
-  FilePdf,
-  ArrowUp,
+  CaretLeftIcon,
+  FilePdfIcon,
+  ArrowUpIcon,
 } from "@phosphor-icons/react";
 import { fetchSSE, type SSEChunk } from "@/lib/sse";
 import { messageEntry, springConfig } from "@/lib/motion";
@@ -191,10 +191,10 @@ function ChatPageContent() {
   if (!sessionId) return null;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-bg">
+    <div className="min-h-dvh flex flex-col bg-bg">
       {/* ─── ChatHeader: Double-Bezel, sticky, glass ─── */}
       <header className="sticky top-0 z-10 px-4 md:px-6 pt-3 pb-0">
-        <div className="rounded-[2rem] p-1.5 bg-shell/80 ring-1 ring-black/5 backdrop-blur-xl">
+        <div className="rounded-4xl p-1.5 bg-shell/80 ring-1 ring-black/5 backdrop-blur-xl">
           <div className="bg-white rounded-[calc(2rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-4 md:px-6 py-3">
             <div className="max-w-[1400px] mx-auto flex items-center gap-4">
               {/* Back button */}
@@ -204,12 +204,12 @@ function ChatPageContent() {
                 className="flex items-center justify-center w-10 h-10 rounded-full text-text-3 hover:text-text-1 hover:bg-shell transition-colors duration-300 shrink-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
               >
-                <CaretLeft size={20} weight="regular" />
+                <CaretLeftIcon size={20} weight="regular" />
               </Link>
 
               {/* Document info */}
               <div className="flex items-center gap-3 min-w-0">
-                <FilePdf size={20} weight="duotone" className="text-destructive shrink-0" />
+                <FilePdfIcon size={20} weight="duotone" className="text-destructive shrink-0" />
                 <div className="min-w-0">
                   <h1 className="text-base font-semibold text-text-1 truncate tracking-tight">
                     {filename}
@@ -254,14 +254,14 @@ function ChatPageContent() {
                   >
                     {msg.role === "user" ? (
                       /* ─── User bubble: single-layer, shell bg ─── */
-                      <div className="max-w-[85%] md:max-w-[70%] bg-shell text-text-1 rounded-[1.5rem] px-5 py-3 text-base leading-relaxed ring-1 ring-black/5">
+                      <div className="max-w-[85%] md:max-w-[70%] bg-shell text-text-1 rounded-3xl px-5 py-3 text-base leading-relaxed ring-1 ring-black/5">
                         {msg.content}
                       </div>
                     ) : (
                       /* ─── AI bubble: Double-Bezel ─── */
                       <div className="flex gap-3 max-w-[85%] md:max-w-[75%]">
                         <AvatarDot />
-                        <div className="rounded-[1.5rem] p-1.5 bg-shell ring-1 ring-black/5">
+                        <div className="rounded-3xl p-1.5 bg-shell ring-1 ring-black/5">
                           <div className="bg-white rounded-[calc(1.5rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-5 py-3">
                             <p className="text-base leading-relaxed text-text-2 whitespace-pre-wrap">
                               {msg.content}
@@ -299,10 +299,10 @@ function ChatPageContent() {
       {/* ─── InputBar: Double-Bezel, fixed bottom ─── */}
       <div className="sticky bottom-0 px-4 md:px-6 pb-4 pt-2">
         <div className="max-w-3xl mx-auto">
-          <div className="rounded-[2rem] p-2 bg-shell ring-1 ring-black/5 transition-all duration-300"
+          <div className="rounded-4xl p-2 bg-shell ring-1 ring-black/5 transition-all duration-300"
             style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
           >
-            <div className="bg-white rounded-[calc(2rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex items-end gap-3 px-5 py-3">
+            <div className="bg-white rounded-3xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex items-end gap-3 px-5 py-3">
               <label htmlFor="chat-input" className="sr-only">
                 Ask a question about your document
               </label>
@@ -329,7 +329,7 @@ function ChatPageContent() {
                 style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
               >
                 <span className="flex items-center justify-center w-5 h-5">
-                  <ArrowUp size={20} weight="bold" className="text-on-accent" />
+                  <ArrowUpIcon size={20} weight="bold" className="text-on-accent" />
                 </span>
               </motion.button>
             </div>

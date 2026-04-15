@@ -88,7 +88,3 @@ doctalk/
 | NEXT_PUBLIC_API_URL | No | Backend URL, defaults to http://localhost:3001 |
 | CORS_ORIGIN | No | Allowed CORS origin, defaults to http://localhost:3000 |
 | PORT | No | Backend port, defaults to 3001 |
-
-## License
-
-MIT

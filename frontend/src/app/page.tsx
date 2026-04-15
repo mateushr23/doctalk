@@ -4,11 +4,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  CloudArrowUp,
-  ArrowRight,
-  FilePdf,
-  X,
-  WarningCircle,
+  CloudArrowUpIcon,
+  ArrowRightIcon,
+  FilePdfIcon,
+  XIcon,
+  WarningCircleIcon,
 } from "@phosphor-icons/react";
 import { softEase, scrollEntry, staggerContainer, springConfig } from "@/lib/motion";
 
@@ -184,7 +184,7 @@ export default function UploadPage() {
   }, [file, isUploading, router, showError]);
 
   return (
-    <main className="min-h-[100dvh] flex items-center">
+    <main className="min-h-dvh flex items-center">
       <motion.div
         variants={staggerContainer}
         initial="hidden"
@@ -235,7 +235,7 @@ export default function UploadPage() {
                 : { duration: 4, repeat: Infinity, ease: "easeInOut" }
             }
             className={`
-              rounded-[2rem] p-2 ring-1 transition-colors duration-500
+              rounded-4xl p-2 ring-1 transition-colors duration-500
               ${isDragging ? "bg-accent-soft ring-accent" : "bg-shell ring-black/5"}
               ${error ? "ring-destructive" : ""}
             `}
@@ -258,7 +258,7 @@ export default function UploadPage() {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               className={`
-                bg-white rounded-[calc(2rem-0.5rem)] p-8 md:p-10
+                bg-white rounded-3xl p-8 md:p-10
                 shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)]
                 flex flex-col items-center justify-center gap-4 text-center
                 cursor-pointer min-h-[320px]
@@ -273,7 +273,7 @@ export default function UploadPage() {
                 animate={isDragging ? { y: -4 } : { y: 0 }}
                 transition={springConfig}
               >
-                <CloudArrowUp
+                <CloudArrowUpIcon
                   size={64}
                   weight="light"
                   className={`transition-colors duration-300 ${
@@ -312,10 +312,10 @@ export default function UploadPage() {
                 type="button"
               >
                 {COPY.browseButton}
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105"
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-px group-hover:scale-105"
                   style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
                 >
-                  <ArrowRight size={16} weight="bold" className="text-on-accent" />
+                  <ArrowRightIcon size={16} weight="bold" className="text-on-accent" />
                 </span>
               </motion.button>
             </div>
@@ -339,10 +339,10 @@ export default function UploadPage() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0, y: -8, filter: "blur(4px)" }}
                 transition={{ duration: 0.5, ease: softEase }}
-                className="rounded-[2rem] p-2 bg-shell ring-1 ring-black/5"
+                className="rounded-4xl p-2 bg-shell ring-1 ring-black/5"
               >
-                <div className="bg-white rounded-[calc(2rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-6 py-4 flex items-center gap-4">
-                  <FilePdf size={24} weight="duotone" className="text-destructive shrink-0" />
+                <div className="bg-white rounded-3xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-6 py-4 flex items-center gap-4">
+                  <FilePdfIcon size={24} weight="duotone" className="text-destructive shrink-0" />
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-text-1 truncate">{file.name}</p>
                     <p className="text-xs text-text-3">{formatFileSize(file.size)}</p>
@@ -352,7 +352,7 @@ export default function UploadPage() {
                     aria-label={COPY.removeLabel}
                     className="shrink-0 text-text-3 hover:text-destructive transition-colors duration-200"
                   >
-                    <X size={18} weight="regular" />
+                    <XIcon size={18} weight="regular" />
                   </button>
                 </div>
               </motion.div>
@@ -365,11 +365,11 @@ export default function UploadPage() {
                 animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5, ease: softEase }}
-                className="rounded-[2rem] p-2 bg-shell ring-1 ring-black/5"
+                className="rounded-4xl p-2 bg-shell ring-1 ring-black/5"
               >
-                <div className="bg-white rounded-[calc(2rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-6 py-5 flex flex-col gap-3">
+                <div className="bg-white rounded-3xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-6 py-5 flex flex-col gap-3">
                   <div className="flex items-center gap-3">
-                    <FilePdf size={24} weight="duotone" className="text-destructive shrink-0" />
+                    <FilePdfIcon size={24} weight="duotone" className="text-destructive shrink-0" />
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium text-text-1 truncate">{file.name}</p>
                       <p className="text-xs text-text-3">{uploadStatus}</p>
@@ -405,10 +405,10 @@ export default function UploadPage() {
                 style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
               >
                 {COPY.uploadButton}
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-[1px] group-hover:scale-105"
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black/10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-px group-hover:scale-105"
                   style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
                 >
-                  <ArrowRight size={16} weight="bold" className="text-on-accent" />
+                  <ArrowRightIcon size={16} weight="bold" className="text-on-accent" />
                 </span>
               </motion.button>
             </motion.div>
@@ -426,10 +426,10 @@ export default function UploadPage() {
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.4, ease: softEase }}
                 role="alert"
-                className="rounded-[2rem] p-2 bg-destructive-bg ring-1 ring-destructive/10"
+                className="rounded-4xl p-2 bg-destructive-bg ring-1 ring-destructive/10"
               >
-                <div className="bg-white rounded-[calc(2rem-0.5rem)] px-6 py-4 flex items-center gap-3">
-                  <WarningCircle size={20} weight="fill" className="text-destructive shrink-0" />
+                <div className="bg-white rounded-3xl px-6 py-4 flex items-center gap-3">
+                  <WarningCircleIcon size={20} weight="fill" className="text-destructive shrink-0" />
                   <span className="text-sm text-destructive">{error}</span>
                 </div>
               </motion.div>

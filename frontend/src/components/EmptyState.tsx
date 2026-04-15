@@ -101,7 +101,7 @@ export function EmptyState({ filename, onSelectChip }: EmptyStateProps) {
             onClick={() => onSelectChip(chip)}
             className="rounded-[1.25rem] p-1 bg-shell ring-1 ring-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
           >
-            <span className="block bg-white rounded-[calc(1.25rem-0.25rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-4 py-2 text-sm text-text-2 whitespace-nowrap">
+            <span className="block bg-white rounded-2xl shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-4 py-2 text-sm text-text-2 whitespace-nowrap">
               {chip}
             </span>
           </motion.button>
