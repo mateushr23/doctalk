@@ -1,0 +1,186 @@
+{
+  "stage": "design",
+  "project": "DocTalk — Chat com PDF",
+  "created_at": "2026-04-15",
+  "dials": {
+    "design_variance": 8,
+    "motion_intensity": 7,
+    "visual_density": 4
+  },
+  "style_mode": "soft",
+  "style_base": "Soft Structuralism",
+  "vibe_archetype": "Soft Structuralism (Consumer / Health / Portfolio)",
+  "layout_archetype": "Asymmetrical Bento + Editorial Split",
+  "tokens": {
+    "colors": {
+      "bg": { "hex": "#FAFAFA", "role": "Page background — silver-grey canvas" },
+      "surface": { "hex": "#FFFFFF", "role": "Inner cores of Double-Bezel cards, AI bubbles, input bar" },
+      "surface-elevated": { "hex": "#FFFFFF", "role": "Drop zone inner core, floating panels — distinguished by shadow depth" },
+      "shell": { "hex": "#F5F5F5", "role": "Outer bezel of Double-Bezel cards — aluminum tray" },
+      "text-1": { "hex": "#111111", "role": "Headlines, document name, primary labels — near-black" },
+      "text-2": { "hex": "#6B7280", "role": "Body text, AI responses, secondary labels" },
+      "text-3": { "hex": "#9CA3AF", "role": "Timestamps, placeholders, helper text, muted captions" },
+      "accent": { "hex": "#2563EB", "role": "CTAs, upload progress, focus indicators, links" },
+      "accent-hover": { "hex": "#1D4ED8", "role": "Hover/pressed state for accent elements" },
+      "accent-soft": { "hex": "#EFF6FF", "role": "Eyebrow tag backgrounds, selected states, subtle highlights" },
+      "on-accent": { "hex": "#FFFFFF", "role": "Text on accent-colored backgrounds" },
+      "border": { "css": "rgba(0,0,0,0.05)", "role": "Hairline rings on outer bezels — ring-1 ring-black/5" },
+      "border-inner": { "css": "rgba(255,255,255,0.15)", "role": "Inner highlight shadow on card cores" },
+      "destructive": { "hex": "#DC2626", "role": "Error text, invalid file indicator" },
+      "destructive-bg": { "hex": "#FEF2F2", "role": "Error message container background" }
+    },
+    "fonts": {
+      "primary": {
+        "family": "Geist",
+        "source": "local",
+        "weights": [400, 500, 600, 700],
+        "usage": "All text — headings (700, tracking-tight), body (400)"
+      },
+      "mono": {
+        "family": "Geist Mono",
+        "source": "local",
+        "weights": [400],
+        "usage": "Code snippets within AI chat responses"
+      }
+    },
+    "typography": {
+      "display": { "size": "3.5rem", "weight": 700, "lineHeight": 1.0, "letterSpacing": "-0.03em" },
+      "h1": { "size": "3rem", "weight": 700, "lineHeight": 1.05, "letterSpacing": "-0.025em" },
+      "h2": { "size": "2rem", "weight": 700, "lineHeight": 1.1, "letterSpacing": "-0.02em" },
+      "h3": { "size": "1.5rem", "weight": 600, "lineHeight": 1.2, "letterSpacing": "-0.01em" },
+      "body": { "size": "1rem", "weight": 400, "lineHeight": 1.625, "letterSpacing": "0" },
+      "body-small": { "size": "0.875rem", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" },
+      "caption": { "size": "0.75rem", "weight": 500, "lineHeight": 1.33, "letterSpacing": "0.01em" },
+      "eyebrow": { "size": "0.625rem", "weight": 500, "lineHeight": 1.6, "letterSpacing": "0.2em", "transform": "uppercase" },
+      "mono": { "size": "0.875rem", "weight": 400, "lineHeight": 1.5, "letterSpacing": "0" }
+    },
+    "spacing": {
+      "base": "4px",
+      "scale": {
+        "1": "4px", "2": "8px", "3": "12px", "4": "16px", "5": "20px",
+        "6": "24px", "8": "32px", "10": "40px", "12": "48px", "16": "64px",
+        "24": "96px", "32": "128px", "40": "160px"
+      },
+      "section-padding-min": "96px",
+      "section-padding-max": "160px",
+      "card-padding": "32px",
+      "card-padding-large": "40px",
+      "bezel-padding": "8px",
+      "message-gap": "24px",
+      "container-max": "1400px",
+      "chat-column-max": "768px"
+    },
+    "radii": {
+      "bezel-outer": "2rem",
+      "bezel-inner": "calc(2rem - 0.5rem)",
+      "bubble-outer": "1.5rem",
+      "bubble-inner": "calc(1.5rem - 0.375rem)",
+      "button": "9999px",
+      "eyebrow": "9999px",
+      "input": "1.5rem",
+      "mobile-bubble": "1.25rem"
+    },
+    "shadows": {
+      "diffused": "0 20px 60px -15px rgba(0,0,0,0.04)",
+      "diffused-hover": "0 25px 70px -15px rgba(0,0,0,0.06)",
+      "inner-highlight": "inset 0 1px 1px rgba(255,255,255,0.15)",
+      "input-focus": "0 0 0 1px rgba(37,99,235,0.1)",
+      "none": "none"
+    },
+    "motion": {
+      "easing-primary": "cubic-bezier(0.32, 0.72, 0, 1)",
+      "easing-entry": "cubic-bezier(0.16, 1, 0.3, 1)",
+      "duration-micro": "200ms",
+      "duration-normal": "300ms",
+      "duration-major": "500ms",
+      "duration-reveal": "800ms",
+      "spring-interactive": { "type": "spring", "stiffness": 120, "damping": 20 },
+      "spring-progress": { "type": "spring", "stiffness": 80, "damping": 25 },
+      "spring-breathe": { "type": "spring", "stiffness": 60, "damping": 15 },
+      "stagger-children": "80ms",
+      "cursor-blink-interval": "530ms"
+    }
+  },
+  "components": {
+    "double_bezel": {
+      "description": "Nested card architecture — outer shell with hairline ring + inner core with own background and inner highlight shadow",
+      "outer_shell": {
+        "background": "shell",
+        "border": "ring-1 ring-black/5",
+        "padding": "p-2",
+        "radius": "rounded-[2rem]"
+      },
+      "inner_core": {
+        "background": "surface",
+        "shadow": "inner-highlight + diffused",
+        "radius": "rounded-[calc(2rem-0.5rem)]",
+        "padding": "p-8"
+      }
+    },
+    "button_in_button": {
+      "description": "CTA with nested icon circle — pill body + internal circular icon wrapper",
+      "body": {
+        "background": "accent",
+        "text": "on-accent",
+        "radius": "rounded-full",
+        "padding": "px-6 py-3"
+      },
+      "icon_circle": {
+        "size": "w-8 h-8",
+        "background": "bg-white/10",
+        "radius": "rounded-full",
+        "hover_transform": "translate-x-1 -translate-y-[1px] scale-105"
+      }
+    },
+    "eyebrow_tag": {
+      "description": "Pill-shaped badge before headings",
+      "background": "accent-soft",
+      "text": "accent",
+      "radius": "rounded-full",
+      "padding": "px-3 py-1",
+      "typography": "eyebrow"
+    }
+  },
+  "screens": {
+    "upload": {
+      "route": "/",
+      "layout": "Editorial Split — text left (cols 1-5), drop zone right (cols 6-12)",
+      "grid": "grid grid-cols-12 gap-8",
+      "min_height": "min-h-[100dvh]",
+      "section_padding": "py-32",
+      "key_components": ["FloatingNav", "EyebrowTag", "DisplayHeading", "DropZone (Double-Bezel)", "BrowseButton (Button-in-Button)", "UploadProgress"],
+      "mobile_behavior": "Single column, display heading drops to 2.25rem, drop zone full-width with px-4"
+    },
+    "chat": {
+      "route": "/chat",
+      "layout": "Single-column centered conversation, expansive lateral whitespace",
+      "message_column": "max-w-3xl mx-auto",
+      "header": "Sticky, glass effect (backdrop-blur), Double-Bezel",
+      "input_bar": "Fixed bottom, Double-Bezel, max-w-3xl mx-auto",
+      "key_components": ["ChatHeader (Double-Bezel, sticky glass)", "WelcomeState", "StarterChips", "UserMessage", "AIMessage (Double-Bezel)", "StreamingCursor", "SourceCitation", "InputBar (Double-Bezel)", "SendButton (Button-in-Button)"],
+      "mobile_behavior": "Full-width messages px-4, header actions collapse to overflow, reduced bubble radii"
+    }
+  },
+  "icons": {
+    "library": "@phosphor-icons/react",
+    "weight": "light",
+    "stroke_width": 1.5,
+    "verify_package": true
+  },
+  "anti_patterns_enforced": [
+    "No Inter/Roboto/Arial fonts",
+    "No 1px solid gray borders — ring-1 ring-black/5 only",
+    "No harsh drop shadows",
+    "No 3-column card grids",
+    "No linear/ease-in-out transitions",
+    "No h-screen — min-h-[100dvh] only",
+    "No #000000 — darkest is #111111",
+    "No emojis in content or code",
+    "No centered heroes (VARIANCE 8)",
+    "No outer glows or neon effects",
+    "No AI purple anywhere",
+    "No useState for magnetic hover — useMotionValue only",
+    "No backdrop-blur on scrolling content",
+    "No window.addEventListener scroll"
+  ]
+}

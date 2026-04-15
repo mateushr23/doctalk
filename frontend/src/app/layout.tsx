@@ -13,8 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DocTalk",
-  description: "Chat with your PDF documents using AI",
+  title: "DocTalk — Chat with your PDF documents",
+  description:
+    "Upload a PDF and ask questions about it. Get instant answers from your documents with AI-powered chat.",
+  openGraph: {
+    title: "DocTalk — Chat with your PDF",
+    description:
+      "Upload a PDF, ask questions, get answers. A simple tool to read and understand your documents faster.",
+  },
 };
 
 export default function RootLayout({
@@ -25,9 +31,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-dvh bg-bg text-text-1 font-sans">
+        {children}
+      </body>
     </html>
   );
 }
