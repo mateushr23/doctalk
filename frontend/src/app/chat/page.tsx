@@ -10,7 +10,7 @@ import {
   ArrowUp,
 } from "@phosphor-icons/react";
 import { fetchSSE, type SSEChunk } from "@/lib/sse";
-import { softEase, messageEntry, springConfig } from "@/lib/motion";
+import { messageEntry, springConfig } from "@/lib/motion";
 import { EmptyState } from "@/components/EmptyState";
 
 /* ─── Copy ─── */
