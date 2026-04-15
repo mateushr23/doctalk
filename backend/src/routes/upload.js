@@ -22,7 +22,8 @@ router.post('/', async (req, res, next) => {
     let pdfData;
     try {
       pdfData = await pdfParse(req.file.buffer);
-    } catch {
+    } catch (parseErr) {
+      console.error('pdf-parse error:', parseErr);
       return res.status(422).json({
         error:
           'Could not read this PDF. The file may be corrupted or password-protected.',

@@ -6,11 +6,28 @@ const router = Router();
 
 let groq = null;
 
+// Groq free tier: 12,000 TPM. Reserve room for history + response.
+const MAX_CONTEXT_TOKENS = 8000;
+
 function getGroqClient() {
   if (!groq) {
     groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
   }
   return groq;
+}
+
+/**
+ * Estimate token count (~4 chars per token) and truncate if needed.
+ */
+function truncateToTokenLimit(text, maxTokens = MAX_CONTEXT_TOKENS) {
+  const estimatedTokens = Math.ceil(text.length / 4);
+  if (estimatedTokens <= maxTokens) {
+    return text;
+  }
+  const maxChars = maxTokens * 4;
+  return (
+    text.slice(0, maxChars) + '\n\n[Document truncated to fit context window]'
+  );
 }
 
 router.post('/', async (req, res) => {
@@ -37,7 +54,7 @@ router.post('/', async (req, res) => {
   }
 
   const session = store.get(sessionId);
-  const pdfText = session.text;
+  const pdfText = truncateToTokenLimit(session.text);
 
   // Build messages array
   const systemMessage = {
@@ -60,19 +77,42 @@ router.post('/', async (req, res) => {
   // Append current user message
   messages.push({ role: 'user', content: message.trim() });
 
-  // Set SSE headers
+  // Create the stream BEFORE setting SSE headers so Groq errors return proper JSON
+  let stream;
+  try {
+    stream = await getGroqClient().chat.completions.create({
+      model: 'llama-3.3-70b-versatile',
+      messages,
+      stream: true,
+    });
+  } catch (err) {
+    console.error('Groq API error:', err.message, err.status, err.error || '');
+
+    if (err.status === 429 || err.status === 413) {
+      return res.status(413).json({
+        error:
+          'This PDF is too large for the AI to process. Try a shorter document.',
+      });
+    }
+
+    if (err.status === 401 || err.status === 403) {
+      return res.status(500).json({
+        error: 'Something went wrong. Please try again.',
+      });
+    }
+
+    return res.status(500).json({
+      error: 'Something went wrong. Please try again.',
+    });
+  }
+
+  // Stream confirmed — NOW set SSE headers
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
   try {
-    const stream = await getGroqClient().chat.completions.create({
-      model: 'llama-3.3-70b-versatile',
-      messages,
-      stream: true,
-    });
-
     for await (const chunk of stream) {
       const content = chunk.choices[0]?.delta?.content || '';
       if (content) {
@@ -83,46 +123,12 @@ router.post('/', async (req, res) => {
     // Send completion event
     res.write(`data: ${JSON.stringify({ content: '', done: true })}\n\n`);
     res.end();
-  } catch (err) {
-    console.error('Groq API error:', err.message);
-
-    // If headers already sent (streaming started), end the stream
-    if (res.headersSent) {
-      res.write(
-        `data: ${JSON.stringify({ content: '', done: true, error: 'The response was interrupted. Send your question again.' })}\n\n`
-      );
-      res.end();
-      return;
-    }
-
-    // Rate limit
-    if (err.status === 429 || err.error?.type === 'rate_limit_exceeded') {
-      return res.status(429).json({
-        error: 'Too many requests. Wait a moment and try again.',
-      });
-    }
-
-    // Auth error
-    if (err.status === 401 || err.status === 403) {
-      return res.status(500).json({
-        error: 'Something went wrong. Please try again.',
-      });
-    }
-
-    // Context too long
-    if (
-      err.status === 413 ||
-      (err.message && err.message.toLowerCase().includes('context length'))
-    ) {
-      return res.status(413).json({
-        error:
-          'This PDF is too large for the AI to process. Try a shorter document.',
-      });
-    }
-
-    return res.status(500).json({
-      error: 'Something went wrong. Please try again.',
-    });
+  } catch (streamErr) {
+    console.error('Stream error:', streamErr.message);
+    res.write(
+      `data: ${JSON.stringify({ content: '', done: true, error: 'The response was interrupted. Send your question again.' })}\n\n`
+    );
+    res.end();
   }
 });
 
