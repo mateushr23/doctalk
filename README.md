@@ -2,7 +2,6 @@
 
 Chat with your PDF documents using AI-powered streaming responses.
 
-![DocTalk](screenshot.png)
 
 ## Features
 

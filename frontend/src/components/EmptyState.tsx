@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { springConfig, staggerContainer, fadeUpBlur } from "@/lib/motion";
 
 /* ─── Copy ─── */
 const COPY = {
@@ -12,25 +13,6 @@ const COPY = {
     "Extract all dates and deadlines",
   ],
 } as const;
-
-/* ─── Motion presets ─── */
-const entryEase = [0.16, 1, 0.3, 1] as const;
-const springConfig = { type: "spring" as const, stiffness: 120, damping: 20 };
-
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-};
-
-const fadeUpBlur = {
-  hidden: { opacity: 0, y: 64, filter: "blur(12px)" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.8, ease: entryEase },
-  },
-};
 
 /* ─── Abstract geometric illustration ─── */
 function GeometricIllustration() {

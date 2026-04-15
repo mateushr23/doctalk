@@ -57,9 +57,13 @@ router.post('/', async (req, res) => {
   const pdfText = truncateToTokenLimit(session.text);
 
   // Build messages array
+  const systemContent = pdfText.trim()
+    ? `You are a helpful document assistant. Answer questions based on the following document content:\n\n${pdfText}\n\nAlways reference specific parts of the document when answering. If the answer is not in the document, say so clearly.`
+    : `You are a helpful document assistant. The user uploaded a PDF, but no text could be extracted from it (it may be a scanned image without OCR). Let the user know you cannot read the document and suggest they try a PDF with selectable text.`;
+
   const systemMessage = {
     role: 'system',
-    content: `You are a helpful document assistant. Answer questions based on the following document content:\n\n${pdfText}\n\nAlways reference specific parts of the document when answering. If the answer is not in the document, say so clearly.`,
+    content: systemContent,
   };
 
   const messages = [systemMessage];
@@ -88,7 +92,12 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('Groq API error:', err.message, err.status, err.error || '');
 
-    // Rate limit (TPM exceeded on Groq free tier)
+    // Rate limit (TPM exceeded on Groq free tier).
+    // Groq returns 429 for standard rate limits, but its free tier also
+    // returns 413 with code "rate_limit_exceeded" when tokens-per-minute
+    // (TPM) limits are hit. This is NOT a true context-length 413 — it's
+    // a rate-limit error wearing a 413 status code. We catch it here so
+    // the user sees a "try again" message instead of "PDF too large."
     if (err.status === 429 || (err.error?.code === 'rate_limit_exceeded' && err.status === 413)) {
       return res.status(429).json({
         error: 'Too many requests. Wait a moment and try again.',

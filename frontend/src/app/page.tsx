@@ -10,6 +10,7 @@ import {
   X,
   WarningCircle,
 } from "@phosphor-icons/react";
+import { softEase, scrollEntry, staggerContainer, springConfig } from "@/lib/motion";
 
 /* ─── Copy ─── */
 const COPY = {
@@ -20,6 +21,7 @@ const COPY = {
   browseButton: "Browse files",
   uploadButton: "Upload and start chatting",
   uploadButtonLoading: "Uploading...",
+  dropLabel: "Drop your PDF here",
   fileConstraint: "PDF files up to 20 MB",
   removeLabel: "Remove file",
   stateUploading: "Uploading...",
@@ -35,27 +37,6 @@ const ERRORS = {
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024;
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
-
-/* ─── Motion presets ─── */
-const softEase = [0.32, 0.72, 0, 1] as const;
-const entryEase = [0.16, 1, 0.3, 1] as const;
-
-const scrollEntry = {
-  hidden: { opacity: 0, y: 64, filter: "blur(12px)" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.8, ease: entryEase },
-  },
-};
-
-const staggerContainer = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-};
-
-const springConfig = { type: "spring" as const, stiffness: 120, damping: 20 };
 
 /* ─── Helpers ─── */
 function formatFileSize(bytes: number): string {
@@ -265,6 +246,7 @@ export default function UploadPage() {
               role="button"
               tabIndex={0}
               aria-label="PDF upload area. Drag and drop a PDF file or click to browse."
+              aria-disabled={isUploading}
               onClick={() => !isUploading && fileInputRef.current?.click()}
               onKeyDown={(e) => {
                 if ((e.key === "Enter" || e.key === " ") && !isUploading) {
@@ -302,7 +284,7 @@ export default function UploadPage() {
 
               {/* Drop label */}
               <p className="text-base font-medium text-text-1">
-                {isDragging ? COPY.dragOver : "Drop your PDF here"}
+                {isDragging ? COPY.dragOver : COPY.dropLabel}
               </p>
 
               {/* Helper text */}

@@ -10,6 +10,7 @@ import {
   ArrowUp,
 } from "@phosphor-icons/react";
 import { fetchSSE, type SSEChunk } from "@/lib/sse";
+import { softEase, messageEntry, springConfig } from "@/lib/motion";
 import { EmptyState } from "@/components/EmptyState";
 
 /* ─── Copy ─── */
@@ -28,25 +29,11 @@ const COPY = {
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 const AUTO_SCROLL_THRESHOLD = 100;
 
-/* ─── Motion presets ─── */
-const entryEase = [0.16, 1, 0.3, 1] as const;
-const softEase = [0.32, 0.72, 0, 1] as const;
-const springConfig = { type: "spring" as const, stiffness: 120, damping: 20 };
-
-const messageEntry = {
-  hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
-  visible: {
-    opacity: 1,
-    y: 0,
-    filter: "blur(0px)",
-    transition: { duration: 0.6, ease: entryEase },
-  },
-};
-
 /* ─── Avatar dot with breathing pulse ─── */
 const AvatarDot = memo(function AvatarDot() {
   return (
     <motion.div
+      aria-hidden="true"
       animate={{ scale: [1, 1.15, 1] }}
       transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       className="w-3 h-3 rounded-full bg-accent shrink-0 mt-1"
@@ -56,6 +43,7 @@ const AvatarDot = memo(function AvatarDot() {
 
 /* ─── Types ─── */
 interface Message {
+  id: string;
   role: "user" | "assistant";
   content: string;
 }
@@ -101,7 +89,7 @@ function ChatPageContent() {
     async (text: string) => {
       if (!text.trim() || !sessionId || isStreaming) return;
 
-      const userMessage: Message = { role: "user", content: text.trim() };
+      const userMessage: Message = { id: crypto.randomUUID(), role: "user", content: text.trim() };
       const updatedMessages = [...messages, userMessage];
       setMessages(updatedMessages);
       setInput("");
@@ -110,7 +98,7 @@ function ChatPageContent() {
 
       if (textareaRef.current) textareaRef.current.style.height = "auto";
 
-      const assistantMessage: Message = { role: "assistant", content: "" };
+      const assistantMessage: Message = { id: crypto.randomUUID(), role: "assistant", content: "" };
       setMessages([...updatedMessages, assistantMessage]);
 
       const controller = new AbortController();
@@ -203,10 +191,10 @@ function ChatPageContent() {
   if (!sessionId) return null;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-[#FAFAFA]">
+    <div className="min-h-[100dvh] flex flex-col bg-bg">
       {/* ─── ChatHeader: Double-Bezel, sticky, glass ─── */}
       <header className="sticky top-0 z-10 px-4 md:px-6 pt-3 pb-0">
-        <div className="rounded-[2rem] p-1.5 bg-[#F5F5F5]/80 ring-1 ring-black/5 backdrop-blur-xl">
+        <div className="rounded-[2rem] p-1.5 bg-shell/80 ring-1 ring-black/5 backdrop-blur-xl">
           <div className="bg-white rounded-[calc(2rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-4 md:px-6 py-3">
             <div className="max-w-[1400px] mx-auto flex items-center gap-4">
               {/* Back button */}
@@ -258,7 +246,7 @@ function ChatPageContent() {
               <AnimatePresence initial={false}>
                 {messages.map((msg, i) => (
                   <motion.div
-                    key={i}
+                    key={msg.id}
                     variants={messageEntry}
                     initial="hidden"
                     animate="visible"
@@ -266,14 +254,14 @@ function ChatPageContent() {
                   >
                     {msg.role === "user" ? (
                       /* ─── User bubble: single-layer, shell bg ─── */
-                      <div className="max-w-[85%] md:max-w-[70%] bg-[#F5F5F5] text-text-1 rounded-[1.5rem] px-5 py-3 text-base leading-relaxed ring-1 ring-black/5">
+                      <div className="max-w-[85%] md:max-w-[70%] bg-shell text-text-1 rounded-[1.5rem] px-5 py-3 text-base leading-relaxed ring-1 ring-black/5">
                         {msg.content}
                       </div>
                     ) : (
                       /* ─── AI bubble: Double-Bezel ─── */
                       <div className="flex gap-3 max-w-[85%] md:max-w-[75%]">
                         <AvatarDot />
-                        <div className="rounded-[1.5rem] p-1.5 bg-[#F5F5F5] ring-1 ring-black/5">
+                        <div className="rounded-[1.5rem] p-1.5 bg-shell ring-1 ring-black/5">
                           <div className="bg-white rounded-[calc(1.5rem-0.375rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] px-5 py-3">
                             <p className="text-base leading-relaxed text-text-2 whitespace-pre-wrap">
                               {msg.content}
@@ -311,7 +299,7 @@ function ChatPageContent() {
       {/* ─── InputBar: Double-Bezel, fixed bottom ─── */}
       <div className="sticky bottom-0 px-4 md:px-6 pb-4 pt-2">
         <div className="max-w-3xl mx-auto">
-          <div className="rounded-[2rem] p-2 bg-[#F5F5F5] ring-1 ring-black/5 transition-all duration-300"
+          <div className="rounded-[2rem] p-2 bg-shell ring-1 ring-black/5 transition-all duration-300"
             style={{ transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)" }}
           >
             <div className="bg-white rounded-[calc(2rem-0.5rem)] shadow-[inset_0_1px_1px_rgba(255,255,255,0.15)] flex items-end gap-3 px-5 py-3">
