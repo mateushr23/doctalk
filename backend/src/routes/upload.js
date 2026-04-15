@@ -19,6 +19,13 @@ router.post('/', async (req, res, next) => {
       });
     }
 
+    // Validate PDF magic bytes
+    if (req.file.buffer.length < 4 || req.file.buffer.toString('ascii', 0, 4) !== '%PDF') {
+      return res.status(400).json({
+        error: "This file isn't a PDF. Please upload a PDF document.",
+      });
+    }
+
     let pdfData;
     try {
       pdfData = await pdfParse(req.file.buffer);
