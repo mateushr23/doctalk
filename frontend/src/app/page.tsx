@@ -415,26 +415,28 @@ export default function UploadPage() {
           )}
 
           {/* ─── Error message ─── */}
-          <AnimatePresence>
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, x: 0 }}
-                animate={{
-                  opacity: 1,
-                  x: [0, -4, 4, -2, 0],
-                }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.4, ease: softEase }}
-                role="alert"
-                className="rounded-4xl p-2 bg-destructive-bg ring-1 ring-destructive/10"
-              >
-                <div className="bg-white rounded-3xl px-6 py-4 flex items-center gap-3">
-                  <WarningCircleIcon size={20} weight="fill" className="text-destructive shrink-0" />
-                  <span className="text-sm text-destructive">{error}</span>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <div className="min-h-[72px]">
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, x: 0 }}
+                  animate={{
+                    opacity: 1,
+                    x: [0, -4, 4, -2, 0],
+                  }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.4, ease: softEase }}
+                  role="alert"
+                  className="rounded-4xl p-2 bg-destructive-bg ring-1 ring-destructive/10"
+                >
+                  <div className="bg-white rounded-3xl px-6 py-4 flex items-center gap-3">
+                    <WarningCircleIcon size={20} weight="fill" className="text-destructive shrink-0" />
+                    <span className="text-sm text-destructive">{error}</span>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </motion.div>
       </motion.div>
     </main>
