@@ -1,0 +1,128 @@
+{
+  "stage": "implementation",
+  "target": "backend",
+  "project": "DocTalk — Chat com PDF",
+  "created_at": "2026-04-15",
+  "files_created": [
+    "backend/src/server.js",
+    "backend/src/routes/upload.js",
+    "backend/src/routes/chat.js",
+    "backend/src/store.js",
+    "backend/src/middleware/errorHandler.js",
+    "backend/Dockerfile"
+  ],
+  "files_modified": [
+    "backend/package.json",
+    "docker-compose.yml"
+  ],
+  "server_boots": true,
+  "api_contract": {
+    "endpoints": [
+      {
+        "method": "GET",
+        "path": "/api/health",
+        "description": "Health check endpoint for readiness probes and frontend connectivity test",
+        "response": "{ \"status\": \"ok\" }"
+      },
+      {
+        "method": "POST",
+        "path": "/api/upload",
+        "description": "Upload a PDF file via multipart/form-data, extract text with pdf-parse, store in memory, return session metadata",
+        "request": "multipart/form-data with field 'file' (application/pdf, max 20MB)",
+        "response": "{ \"sessionId\": \"string (crypto.randomUUID)\", \"filename\": \"string\", \"pageCount\": number, \"charCount\": number }",
+        "errors": [
+          { "status": 400, "body": "{ \"error\": \"This file isn't a PDF. Please upload a PDF document.\" }" },
+          { "status": 413, "body": "{ \"error\": \"This file is over 20 MB. Try a smaller PDF.\" }" },
+          { "status": 422, "body": "{ \"error\": \"Could not read this PDF. The file may be corrupted or password-protected.\" }" }
+        ]
+      },
+      {
+        "method": "POST",
+        "path": "/api/chat",
+        "description": "Send a message about an uploaded document and receive a streaming AI response via SSE. Uses Groq llama-3.3-70b-versatile model.",
+        "request": "application/json — { \"sessionId\": \"string\", \"message\": \"string (max 10,000 chars)\", \"history\": [{ \"role\": \"user\" | \"assistant\", \"content\": \"string\" }] }",
+        "response": "text/event-stream — each line: data: { \"content\": \"string\", \"done\": boolean }",
+        "errors": [
+          { "status": 400, "body": "{ \"error\": \"Type a question before sending.\" }" },
+          { "status": 400, "body": "{ \"error\": \"Message is too long. Please keep it under 10,000 characters.\" }" },
+          { "status": 404, "body": "{ \"error\": \"Session not found. Please upload your PDF again.\" }" },
+          { "status": 413, "body": "{ \"error\": \"This PDF is too large for the AI to process. Try a shorter document.\" }" },
+          { "status": 429, "body": "{ \"error\": \"Too many requests. Wait a moment and try again.\" }" },
+          { "status": 500, "body": "{ \"error\": \"Something went wrong. Please try again.\" }" }
+        ]
+      }
+    ]
+  },
+  "dependencies": ["express", "cors", "multer", "groq-sdk", "pdf-parse", "dotenv"],
+  "implementation_notes": {
+    "server": {
+      "file": "backend/src/server.js",
+      "features": [
+        "Express app with CORS (configurable via CORS_ORIGIN env, defaults to http://localhost:3000)",
+        "JSON body parser",
+        "Multer config: memory storage, single file, 20MB limit",
+        "GROQ_API_KEY validated on startup (console.warn if missing)",
+        "Global error handler middleware",
+        "Listens on PORT env var, defaults to 3001"
+      ]
+    },
+    "upload_route": {
+      "file": "backend/src/routes/upload.js",
+      "features": [
+        "Validates file presence and mimetype (application/pdf)",
+        "Wraps pdf-parse in try/catch for corrupted/password-protected PDFs (422)",
+        "Generates sessionId via crypto.randomUUID()",
+        "Stores { text, filename, pageCount } in session store",
+        "Returns { sessionId, filename, pageCount, charCount }"
+      ]
+    },
+    "chat_route": {
+      "file": "backend/src/routes/chat.js",
+      "features": [
+        "Validates sessionId existence, message presence, message length (max 10,000 chars)",
+        "Truncates PDF text to ~8000 tokens (estimated at 4 chars/token) with truncation notice",
+        "System prompt includes full (or truncated) PDF text with instruction to reference document",
+        "Handles empty PDF text case (suggests user try PDF with selectable text)",
+        "History role whitelist: only 'user' and 'assistant' roles accepted (prevents system prompt injection)",
+        "Groq API stream created BEFORE setting SSE headers (errors return proper JSON, not broken SSE)",
+        "Groq free-tier 413 rate_limit_exceeded distinguished from true context-length 413",
+        "SSE streaming: data: JSON per chunk, final event with done:true",
+        "Stream errors caught and sent as SSE event with error message"
+      ]
+    },
+    "session_store": {
+      "file": "backend/src/store.js",
+      "features": [
+        "In-memory Map with TTL-based eviction (1 hour session lifetime)",
+        "Periodic cleanup every 10 minutes via setInterval",
+        "get() checks TTL on access and auto-deletes expired sessions",
+        "Exports set, get, has functions"
+      ]
+    },
+    "error_handler": {
+      "file": "backend/src/middleware/errorHandler.js",
+      "features": [
+        "Catches multer LIMIT_FILE_SIZE (413) and LIMIT_UNEXPECTED_FILE (400)",
+        "Generic 500 for unhandled errors — logs message, no stack trace to client"
+      ]
+    },
+    "docker": {
+      "file": "backend/Dockerfile",
+      "features": [
+        "Node 20 Alpine base",
+        "npm ci --only=production",
+        "Copies src/ directory",
+        "Exposes port 3001",
+        "CMD: node src/server.js"
+      ]
+    },
+    "docker_compose": {
+      "file": "docker-compose.yml",
+      "features": [
+        "Backend service: port 3001, GROQ_API_KEY from .env, CORS_ORIGIN set to http://localhost:3000",
+        "Frontend service: port 3000, depends_on backend, NEXT_PUBLIC_API_URL build arg",
+        "Both services: restart unless-stopped"
+      ]
+    }
+  }
+}
