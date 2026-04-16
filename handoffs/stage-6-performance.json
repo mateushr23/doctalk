@@ -1,52 +1,145 @@
 {
   "stage": "performance",
-  "project": "DocTalk",
-  "audited_at": "2026-04-15",
+  "status": "passed_with_warnings",
+  "audited_at": "2026-04-15T20:55:00Z",
+  "audited_by": "seo-analyzer",
+  "skill": "seo-optimizer v2.0.0",
   "seo": {
-    "title": "present",
+    "title": true,
+    "title_value": "DocTalk — Chat with your PDF documents",
     "title_length": 43,
-    "meta_description": "present",
+    "title_verdict": "Good — under 60 chars, keyword 'PDF' included, brand name leads",
+    "meta_description": true,
+    "meta_description_value": "Upload a PDF and ask questions about it. Get instant answers from your documents with AI-powered chat.",
     "meta_description_length": 97,
-    "og_tags": "present",
-    "issues": [
-      "meta description contains 'AI-powered' which is in the copy forbidden_phrases list — consider rewording to match voice charter"
-    ]
+    "meta_description_verdict": "Below optimal range (120-160 chars). Should be expanded for better SERP click-through.",
+    "og_tags": false,
+    "og_tags_detail": {
+      "og_title": true,
+      "og_description": true,
+      "og_image": false,
+      "og_url": false,
+      "twitter_card": false
+    },
+    "og_verdict": "Partial — og:title and og:description present but og:image, og:url, and Twitter Card meta are missing. Social shares will have no preview image.",
+    "robots_txt": false,
+    "sitemap": false,
+    "structured_data": false,
+    "structured_data_verdict": "No JSON-LD found. A WebApplication or SoftwareApplication schema would improve search appearance."
   },
-  "performance": {
-    "font_strategy": "optimal",
-    "font_notes": "next/font/google with Geist + Geist_Mono, latin subset only — zero render-blocking font requests, proper swap via CSS variables",
-    "estimated_lcp": "good — LCP element is the h1 headline text, no images or heavy assets on either page",
-    "cls_risks": [
-      "Upload page error banner uses animate-[fadeIn] which inserts content below the button — pushes page content down causing minor CLS. Consider reserving space or using an overlay/toast instead.",
-      "Chat page EmptyState disappears when first message is sent — the layout shift from empty→messages is unavoidable but the transition is instant, acceptable."
-    ],
+  "core_web_vitals": {
+    "font_strategy": "Optimal — next/font/google with Geist + Geist_Mono, latin subset, CSS variable injection. Zero render-blocking font requests, automatic font-display:swap.",
+    "image_optimization": "N/A — no images used in the app. The SVG illustration in EmptyState is inline. If images are added later, next/image should be used.",
+    "css_strategy": "Good — Tailwind v4 via @import with PostCSS plugin. Single 23KB CSS bundle. No render-blocking external stylesheets. Custom properties defined in @theme inline block.",
     "bundle_concerns": [
-      "@phosphor-icons/react is imported per-icon (UploadSimple, FilePdf, X, etc.) which is correct for tree-shaking — no issue here",
-      "Both page.tsx files are 'use client' — entire pages are client components. The upload page could potentially have a server component wrapper with the client drop-zone nested, but for a 2-page app the impact is negligible.",
-      "No dynamic imports used, but nothing warrants lazy-loading at this scale"
+      "framer-motion is the largest dependency at ~223KB chunk. For a 2-page app this is acceptable, but if bundle size becomes a concern, consider framer-motion/m for reduced bundle or motion-lite alternatives.",
+      "@phosphor-icons/react imports individual icons (CloudArrowUpIcon, ArrowRightIcon, etc.) — correct tree-shaking pattern, no barrel import issue.",
+      "Both pages are 'use client' — entire page trees are client-rendered. The upload page could have a server component wrapper with the interactive drop-zone as a nested client component, but for this app scale the impact is negligible.",
+      "No dynamic imports (next/dynamic) used. At 979KB total static assets, this is fine — no lazy-loading needed at this scale."
+    ],
+    "estimated_lcp": "Good — LCP element is the h1 text headline on upload page and the chat header on chat page. No large images or heavy above-fold assets.",
+    "cls_risks": [
+      "Error banner on upload page animates in below the drop zone, pushing content down. Minor CLS risk. Fix: use absolute/fixed positioning or reserve space.",
+      "Chat EmptyState disappears when first message arrives — layout reflow is unavoidable but the motion transition smooths it."
     ]
   },
-  "accessibility": {
-    "semantic_html": true,
-    "semantic_html_notes": "Upload page uses <main>, chat page uses <header> and role='log' for message area. Good structure.",
-    "aria_labels": true,
-    "aria_labels_notes": "Drop zone has aria-label, remove button has aria-label, send button has dynamic aria-label, back link has aria-label, message area has role='log' + aria-live='polite', streaming has sr-only text, loading state has sr-only text",
+  "bundle": {
+    "total_size": "979KB (all static assets)",
+    "css_size": "23KB (single bundle)",
+    "js_chunks": {
+      "total_js": "~780KB across 14 chunks",
+      "largest_chunk": "223KB (likely framer-motion)",
+      "second": "138KB (React/Next.js runtime)",
+      "third": "126KB (React DOM)",
+      "fourth": "110KB (Next.js app router)"
+    },
+    "largest_chunks": [
+      "223KB — framer-motion animation library",
+      "138KB — React/Next.js runtime",
+      "126KB — React DOM client",
+      "110KB — Next.js app router internals"
+    ],
+    "recommendations": [
+      "framer-motion is 223KB — acceptable for current scope but monitor if more pages are added. Consider lazy-loading AnimatePresence on chat page via next/dynamic if needed.",
+      "Total 979KB is reasonable for a 2-page SPA with animations. No immediate action required.",
+      "All pages are statically generated (○ marker in build output) — good for initial load performance."
+    ]
+  },
+  "accessibility_seo": {
+    "semantic_html": "Good — upload page uses <main>, chat page uses <header> with <h1>, message area uses role='log'. Proper landmark structure.",
+    "heading_hierarchy": "Upload page: single <h1> 'Talk to your documents' — correct. Chat page: <h1> is the filename in the header — correct. EmptyState has <h2> 'Ask anything about this document' — proper hierarchy under the page h1.",
+    "landmarks": "Upload page: <main> wraps content. Chat page: <header> for nav bar, implicit <main> via flex layout, role='log' for message area. Chat input has sr-only <label>.",
+    "aria_coverage": [
+      "Drop zone: aria-label, aria-disabled, keyboard accessible (Enter/Space)",
+      "File input: hidden with aria-hidden, drop zone serves as visual label",
+      "Remove button: aria-label 'Remove file'",
+      "Send button: dynamic aria-label (changes when streaming)",
+      "Message area: role='log', aria-live='polite'",
+      "Streaming state: sr-only 'AI is responding...' announcement",
+      "Completion state: sr-only 'Response complete' announcement",
+      "Chat textarea: sr-only <label> 'Ask a question about your document'",
+      "Back link: aria-label for screen readers"
+    ],
     "issues": [
-      "Hidden file input has aria-hidden='true' but no associated visible label element — acceptable since the drop zone serves as the label",
-      "Chat page textarea has no <label> element — only placeholder text. Add a sr-only <label> for screen readers.",
-      "Starter chips in EmptyState have no aria-label explaining they are suggested questions — the text content is self-descriptive so this is minor",
-      "Chat page header uses <h2> without a preceding <h1> — heading hierarchy skip"
+      "Starter chips in EmptyState lack role='listbox' or similar grouping — minor, text content is self-descriptive"
     ]
-  },
-  "copy_match": {
-    "status": "aligned",
-    "notes": "All copy in components matches stage-2b-copy.json exactly — headline, subhead, button labels, error messages, aria labels, empty state, and chips all match the copywriter deliverable."
   },
   "recommendations": [
-    "Add a sr-only <label> for the chat textarea (e.g., 'Ask a question about your document')",
-    "Add an <h1> to the chat page (visually hidden if needed) to fix heading hierarchy — currently jumps from none to <h2>",
-    "Rephrase meta description to remove 'AI-powered' per the voice charter forbidden phrases. Suggested: 'Upload a PDF and ask questions about it. Get instant answers from your documents through chat.'",
-    "Reserve vertical space for the error banner on the upload page (or use position:absolute) to prevent layout shift when errors appear",
-    "Consider adding viewport meta export in layout.tsx for completeness — Next.js handles this automatically but an explicit export documents intent"
-  ]
+    {
+      "severity": "critical",
+      "issue": "No robots.txt file",
+      "fix": "Create frontend/public/robots.txt with: User-agent: *\\nAllow: /\\nDisallow: /api/\\nSitemap: https://doctalk.app/sitemap.xml (adjust domain). Without this, crawlers may index API routes or miss the sitemap."
+    },
+    {
+      "severity": "critical",
+      "issue": "No sitemap.xml",
+      "fix": "Add a static frontend/public/sitemap.xml or use Next.js app/sitemap.ts to generate one. For a 2-page app: list / and /chat (though /chat requires query params so it may be excluded)."
+    },
+    {
+      "severity": "critical",
+      "issue": "No structured data (JSON-LD)",
+      "fix": "Add WebApplication JSON-LD schema in layout.tsx: { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'DocTalk', description: '...', applicationCategory: 'UtilityApplication', operatingSystem: 'Any' }. This improves rich snippet eligibility."
+    },
+    {
+      "severity": "warning",
+      "issue": "Missing og:image — social shares will have no preview image",
+      "fix": "Create a 1200x630 OG image (e.g., public/og-image.png) and add to metadata: openGraph: { images: [{ url: '/og-image.png', width: 1200, height: 630 }] }. Also add og:url and Twitter Card meta (twitter:card, twitter:title, twitter:description, twitter:image)."
+    },
+    {
+      "severity": "warning",
+      "issue": "Meta description is 97 chars — below optimal 120-160 char range",
+      "fix": "Expand to ~150 chars. Suggested: 'Upload a PDF and ask questions about it. Get instant, accurate answers from your documents through a simple chat interface. No signup required.' (147 chars)"
+    },
+    {
+      "severity": "warning",
+      "issue": "Meta description contains 'AI-powered' which may be in voice charter forbidden phrases",
+      "fix": "Replace 'AI-powered chat' with 'a simple chat interface' or 'conversational search' to match the voice charter."
+    },
+    {
+      "severity": "warning",
+      "issue": "No canonical URL set",
+      "fix": "Add metadataBase and canonical in layout.tsx metadata: metadataBase: new URL('https://doctalk.app'), alternates: { canonical: '/' }. Prevents duplicate content issues across www/non-www or trailing slashes."
+    },
+    {
+      "severity": "warning",
+      "issue": "Error banner causes minor CLS on upload page",
+      "fix": "Use min-height reservation or position the error as an absolute overlay/toast instead of pushing content down."
+    },
+    {
+      "severity": "info",
+      "issue": "framer-motion is the largest bundle chunk at 223KB",
+      "fix": "Acceptable for current 2-page scope. If bundle size becomes a concern, consider: (1) import { m } from 'framer-motion' for reduced features, (2) lazy-load AnimatePresence via next/dynamic on chat page, or (3) evaluate motion-one as a lighter alternative (~5KB)."
+    },
+    {
+      "severity": "info",
+      "issue": "Both pages are fully client-rendered ('use client' at top level)",
+      "fix": "For a 2-page app this is fine. If the app grows, consider extracting static layout sections (header, footer) as server components and wrapping only interactive parts in client boundaries."
+    },
+    {
+      "severity": "info",
+      "issue": "No favicon or app icons configured beyond default",
+      "fix": "Add apple-touch-icon, favicon-32x32, favicon-16x16 in the public/ directory and reference via metadata.icons in layout.tsx for better mobile bookmark appearance."
+    }
+  ],
+  "report": "DocTalk passes the SEO audit with warnings. Core strengths: excellent font strategy (next/font with zero render-blocking), good semantic HTML with comprehensive ARIA coverage, reasonable bundle size (979KB total, 23KB CSS), and all pages statically generated. The three critical gaps are: no robots.txt (crawlers have no guidance), no sitemap.xml (discovery issue), and no structured data (missed rich snippet opportunity). Additionally, og:image is missing which means social shares will render without a preview image, and the meta description at 97 chars is below the optimal 120-160 range. Bundle-wise, framer-motion at 223KB is the largest dependency but acceptable for this app's scope. No performance-critical issues were found — all recommendations are SEO completeness items rather than runtime bottlenecks."
 }

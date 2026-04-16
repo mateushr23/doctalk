@@ -1,0 +1,67 @@
+{
+  "stage": "qa",
+  "project": "DocTalk — Chat com PDF",
+  "created_at": "2026-04-15",
+  "status": "passed_with_warnings",
+  "checks": {
+    "typescript": "pass",
+    "eslint": "pass (after fix)",
+    "nextjs_build": "pass",
+    "backend_syntax": "pass",
+    "structural_review": "pass",
+    "edge_cases": "6 scenarios checked, all handled"
+  },
+  "warnings": [
+    "ESLint required a fix pass before clean run (initial violations resolved during implementation)",
+    "tsconfig.json uses 'strict': true — all type checks pass with no suppressions",
+    "Backend uses CommonJS (type: 'commonjs' in package.json) while frontend is TypeScript ESM — acceptable for MVP separation"
+  ],
+  "edge_cases_tested": [
+    {
+      "scenario": "Non-PDF file upload",
+      "result": "Rejected with 400 and user-friendly error message on both client and server",
+      "coverage": "Client-side validation (mimetype + extension check) + server-side multer + route validation"
+    },
+    {
+      "scenario": "Oversized file upload (>20MB)",
+      "result": "Rejected with 413 via multer LIMIT_FILE_SIZE, caught by errorHandler middleware",
+      "coverage": "Client-side MAX_FILE_SIZE check + server-side multer limit + error middleware"
+    },
+    {
+      "scenario": "Corrupted or password-protected PDF",
+      "result": "pdf-parse error caught with try/catch, returns 422 with clear message",
+      "coverage": "Dedicated try/catch around pdfParse() in upload route"
+    },
+    {
+      "scenario": "Expired or invalid sessionId in chat",
+      "result": "Returns 404 with 'Session not found' message; TTL eviction cleans sessions after 1 hour",
+      "coverage": "store.has() check + TTL-based get() + periodic cleanup"
+    },
+    {
+      "scenario": "History role injection (system prompt override attempt)",
+      "result": "Only 'user' and 'assistant' roles whitelisted; 'system' role entries silently dropped",
+      "coverage": "allowedRoles Set filter in chat route"
+    },
+    {
+      "scenario": "Groq free-tier rate limit (TPM exceeded)",
+      "result": "Groq 413 with rate_limit_exceeded code distinguished from true context-length 413; returns 429 to client",
+      "coverage": "Conditional check on err.status and err.error.code in chat route error handler"
+    }
+  ],
+  "structural_review": {
+    "frontend": {
+      "component_boundaries": "'use client' on all page components and EmptyState — correct for interactive content",
+      "suspense_usage": "ChatPage wraps ChatPageContent in Suspense for useSearchParams — required by Next.js App Router",
+      "state_management": "useState for all local state, no external state library needed at this scale",
+      "accessibility": "aria-labels on all interactive elements, role='log' on message area, sr-only announcements for streaming states, keyboard navigation supported",
+      "design_system_compliance": "Double-Bezel pattern applied consistently to drop zone, file cards, chat header, AI bubbles, input bar, and starter chips"
+    },
+    "backend": {
+      "route_organization": "Modular routes (upload.js, chat.js) mounted on server.js",
+      "error_handling": "Global errorHandler middleware + per-route error handling with user-friendly messages",
+      "security": "History role whitelist, message length limit (10k chars), no stack traces to client, CORS restricted",
+      "memory_management": "TTL-based session eviction (1h lifetime, 10min cleanup interval)"
+    }
+  },
+  "report": "All QA checks passed. TypeScript strict mode enabled with zero type errors. ESLint clean after initial fix pass. Next.js production build succeeds. Backend syntax validated. Structural review confirms proper separation of concerns, consistent error handling, and design system compliance. Six edge case scenarios tested covering file validation, session management, security (role injection), and rate limiting. Three minor warnings noted: ESLint needed a fix pass, backend uses CommonJS vs frontend ESM (acceptable), and strict TS was verified. No blocking issues found."
+}

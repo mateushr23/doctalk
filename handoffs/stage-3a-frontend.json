@@ -1,0 +1,134 @@
+{
+  "stage": "implementation",
+  "target": "frontend",
+  "project": "DocTalk — Chat com PDF",
+  "created_at": "2026-04-15",
+  "files_created": [
+    "frontend/src/app/page.tsx",
+    "frontend/src/app/chat/page.tsx",
+    "frontend/src/app/layout.tsx",
+    "frontend/src/app/globals.css",
+    "frontend/src/components/EmptyState.tsx",
+    "frontend/src/lib/sse.ts",
+    "frontend/src/lib/motion.ts",
+    "frontend/Dockerfile"
+  ],
+  "files_modified": [
+    "frontend/package.json",
+    "frontend/tsconfig.json"
+  ],
+  "build_status": "pass",
+  "typescript_strict": true,
+  "copy_wired": true,
+  "dependencies_added": ["framer-motion", "@phosphor-icons/react"],
+  "implementation_notes": {
+    "pages": {
+      "upload": {
+        "route": "/",
+        "file": "frontend/src/app/page.tsx",
+        "features": [
+          "Editorial split layout: text left (cols 1-5), drop zone right (cols 6-12)",
+          "Double-Bezel drop zone with drag-and-drop + click-to-browse",
+          "Button-in-Button pattern for Browse and Upload CTAs",
+          "Eyebrow tag ('PDF Intelligence') above display heading",
+          "Client-side file validation: PDF-only, 20MB max",
+          "File info card with filename, size, remove button",
+          "Upload progress bar with spring animation and shimmer overlay",
+          "Error banner with shake animation and auto-dismiss (8s timeout)",
+          "Redirects to /chat?sessionId=<id>&filename=<name> on success",
+          "API_BASE reads from NEXT_PUBLIC_API_URL env var with localhost:3001 fallback"
+        ]
+      },
+      "chat": {
+        "route": "/chat",
+        "file": "frontend/src/app/chat/page.tsx",
+        "features": [
+          "Reads sessionId and filename from URL search params",
+          "Redirects to / if sessionId is missing",
+          "Sticky Double-Bezel glass header with backdrop-blur, doc name, back link (next/link)",
+          "Scrollable message area with role='log' and aria-live='polite'",
+          "User bubbles right-aligned (shell bg), AI bubbles left-aligned (Double-Bezel)",
+          "Breathing avatar dot on AI messages",
+          "SSE streaming with real-time token appending",
+          "Skeleton shimmer loading state while waiting for first token",
+          "Streaming cursor (accent color, 530ms blink) during response",
+          "SR-only announcements for streaming and completion states",
+          "Auto-scroll to bottom with nearBottom threshold (100px)",
+          "AbortController cleanup on unmount",
+          "Input disabled during streaming, Enter to send, Shift+Enter for newline",
+          "Auto-resizing textarea (max 160px height)",
+          "Suspense boundary wrapping useSearchParams",
+          "Fixed bottom Double-Bezel input bar with max-w-3xl"
+        ]
+      }
+    },
+    "components": {
+      "EmptyState": {
+        "file": "frontend/src/components/EmptyState.tsx",
+        "features": [
+          "Abstract geometric SVG illustration with floating animation",
+          "Display heading: 'Ask anything about this document'",
+          "Subtext and filename display",
+          "3 starter chips (Double-Bezel small variant) with hover scale",
+          "Clicking a chip calls onSelectChip to send as first message",
+          "Staggered fadeUpBlur entry animations"
+        ]
+      }
+    },
+    "utilities": {
+      "sse": {
+        "file": "frontend/src/lib/sse.ts",
+        "features": [
+          "fetchSSE: POST JSON, read ReadableStream, parse SSE data: lines",
+          "onChunk/onDone/onError callbacks",
+          "AbortController signal support",
+          "Handles [DONE] sentinel and done:true in parsed JSON",
+          "Buffer management for incomplete SSE lines",
+          "AbortError silently caught (no error callback)"
+        ]
+      },
+      "motion": {
+        "file": "frontend/src/lib/motion.ts",
+        "features": [
+          "softEase and entryEase cubic-bezier presets",
+          "springConfig: stiffness 120, damping 20",
+          "staggerContainer with 80ms stagger",
+          "scrollEntry, messageEntry, fadeUpBlur variant presets",
+          "All use blur filter transitions for Soft Structuralism style"
+        ]
+      }
+    },
+    "styling": {
+      "file": "frontend/src/app/globals.css",
+      "features": [
+        "Tailwind v4 with @theme inline for design tokens",
+        "Full Soft Structuralism color palette as CSS custom properties",
+        "Geist + Geist Mono font stack via CSS variables",
+        "Custom scrollbar (thin, transparent track, subtle thumb)",
+        "Streaming cursor keyframe (530ms blink)",
+        "Skeleton shimmer keyframe (1.5s infinite)",
+        "Progress bar shimmer overlay keyframe",
+        "Breathing animation keyframe for drop zone"
+      ]
+    },
+    "layout": {
+      "file": "frontend/src/app/layout.tsx",
+      "features": [
+        "next/font/google with Geist and Geist_Mono (latin subset)",
+        "Font variables applied to html element",
+        "SEO metadata matching stage-2b-copy.json (title, description, OG tags)",
+        "Body: min-h-dvh, bg-bg, text-text-1, font-sans"
+      ]
+    },
+    "docker": {
+      "file": "frontend/Dockerfile",
+      "features": [
+        "Multi-stage build: deps → builder → runner",
+        "Node 20 Alpine base",
+        "NEXT_PUBLIC_API_URL build arg (default: http://localhost:3001)",
+        "Standalone output mode for minimal production image",
+        "Copies .next/standalone, .next/static, and public"
+      ]
+    }
+  }
+}
